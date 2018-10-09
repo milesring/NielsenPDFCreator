@@ -48,6 +48,7 @@ namespace Nielsen_PDF_Creator
         public void addContractor(String contractor)
         {
             contractors.Add(contractor);
+            contractors.Sort();
         }
 
         public bool removeContractor(String contractor)

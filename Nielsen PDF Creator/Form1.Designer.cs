@@ -34,8 +34,8 @@
             this.dateTime = new System.Windows.Forms.DateTimePicker();
             this.label_date = new System.Windows.Forms.Label();
             this.panel_pdfInput = new System.Windows.Forms.Panel();
-            this.label_pdfs = new System.Windows.Forms.Label();
             this.label_Contractors = new System.Windows.Forms.Label();
+            this.label_pdfs = new System.Windows.Forms.Label();
             this.panel_pdfInput.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +68,7 @@
             this.button_build.TabIndex = 4;
             this.button_build.Text = "Build PDFs";
             this.button_build.UseVisualStyleBackColor = true;
+            this.button_build.Click += new System.EventHandler(this.button_build_Click);
             // 
             // dateTime
             // 
@@ -99,15 +100,6 @@
             this.panel_pdfInput.TabIndex = 7;
             this.panel_pdfInput.Visible = false;
             // 
-            // label_pdfs
-            // 
-            this.label_pdfs.AutoSize = true;
-            this.label_pdfs.Location = new System.Drawing.Point(12, 4);
-            this.label_pdfs.Name = "label_pdfs";
-            this.label_pdfs.Size = new System.Drawing.Size(33, 13);
-            this.label_pdfs.TabIndex = 1;
-            this.label_pdfs.Text = "PDFs";
-            // 
             // label_Contractors
             // 
             this.label_Contractors.AutoSize = true;
@@ -116,6 +108,15 @@
             this.label_Contractors.Size = new System.Drawing.Size(61, 13);
             this.label_Contractors.TabIndex = 2;
             this.label_Contractors.Text = "Contractors";
+            // 
+            // label_pdfs
+            // 
+            this.label_pdfs.AutoSize = true;
+            this.label_pdfs.Location = new System.Drawing.Point(12, 4);
+            this.label_pdfs.Name = "label_pdfs";
+            this.label_pdfs.Size = new System.Drawing.Size(33, 13);
+            this.label_pdfs.TabIndex = 1;
+            this.label_pdfs.Text = "PDFs";
             // 
             // Form1
             // 

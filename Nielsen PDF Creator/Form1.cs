@@ -173,9 +173,9 @@ namespace Nielsen_PDF_Creator
             STL.addPDF("Invoice");
             STL.addPDF("Billing");
             STL.addPDF("Total");
+            STL.addContractor("Jeff");
             STL.addContractor("Day Electric");
             STL.addContractor("Jesse");
-            STL.addContractor("Jeff");
             Properties.Settings.Default.ContractList.Add(STL);
 
         }
@@ -214,5 +214,39 @@ namespace Nielsen_PDF_Creator
             Properties.Settings.Default.ContractList.Add(Rural);
         }
 
+        private void button_build_Click(object sender, EventArgs e)
+        {
+            String command = "";
+            for (int i = 2; i < panel_pdfInput.Controls.Count; i++)
+             {
+                 if(panel_pdfInput.Controls[i] is TextBox)
+                 {
+                     command += " " + "\"" + panel_pdfInput.Controls[i].Text + "\"";
+                 }
+
+                 if(panel_pdfInput.Controls[i] is CheckedListBox)
+                 {
+                     CheckedListBox listbox = (CheckedListBox)panel_pdfInput.Controls[i];
+                     foreach (var item in listbox.CheckedItems)
+                     {
+                         command += " " + "\"" + item.ToString() + " " + dateTime.ToString() + "\"";
+                     }
+                 }
+
+             }
+
+             command += " " + "cat";
+             command += " " + "output";
+             command += " " + "\"Test Report" + " " + dateTime.Text+ ".pdf\"";
+             
+
+            Process process = new Process();
+            // Configure the process using the StartInfo properties.
+            process.StartInfo.FileName = "pdftk";
+            process.StartInfo.Arguments = command;
+            process.Start();
+            process.WaitForExit();// Waits here for the process to exit.
+
+        }
     }
 }
