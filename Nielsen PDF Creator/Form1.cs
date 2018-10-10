@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,8 @@ namespace Nielsen_PDF_Creator
             {
                 combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
             }
+
+            button_build.Enabled = false;
 
         }
 
@@ -62,14 +65,25 @@ namespace Nielsen_PDF_Creator
 
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
-                openFileDialog1.InitialDirectory = "c:\\";
+                if (Properties.Settings.Default.LastFilePath.Equals(""))
+                {
+                    openFileDialog1.InitialDirectory = "c:\\";
+                }
+                else
+                {
+                    openFileDialog1.InitialDirectory = Properties.Settings.Default.LastFilePath;
+                }
+                
                 openFileDialog1.Filter = "pdf files (*.pdf)|*.pdf";
                 openFileDialog1.FilterIndex = 2;
                 openFileDialog1.RestoreDirectory = true;
 
+                
+
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     fileName = openFileDialog1.FileName;
+                    Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
                     int index = panel_pdfInput.Controls.IndexOf((Button)sender);
                     panel_pdfInput.Controls[index - 1].Text = fileName;
                     //text_pdf1.Text = fileName;
@@ -81,6 +95,7 @@ namespace Nielsen_PDF_Creator
         {
             panel_pdfInput.Visible = true;
             panel_pdfInput.Enabled = true;
+            button_build.Enabled = true;
             Label pdflabel = (Label)panel_pdfInput.Controls[0];
             Label contractorLabel = (Label)panel_pdfInput.Controls[1];
             panel_pdfInput.Controls.Clear();
@@ -143,6 +158,9 @@ namespace Nielsen_PDF_Creator
 
             BuildURD();
             BuildSTL();
+            BuildHourly();
+            BuildMetro();
+
             Properties.Settings.Default.Save();
 
         }
@@ -155,6 +173,14 @@ namespace Nielsen_PDF_Creator
             URD.addPDF("Invoice");
             URD.addPDF("Billing");
             URD.addPDF("Total");
+
+            URD.addContractor("CBT");
+            URD.addContractor("Central States");
+            URD.addContractor("Crew 24 Chris");
+            URD.addContractor("Fitzgerald");
+            URD.addContractor("Jeff");
+            URD.addContractor("Jesse");
+
 
             Properties.Settings.Default.ContractList.Add(URD);
         }
@@ -173,9 +199,11 @@ namespace Nielsen_PDF_Creator
             STL.addPDF("Invoice");
             STL.addPDF("Billing");
             STL.addPDF("Total");
+
             STL.addContractor("Jeff");
             STL.addContractor("Day Electric");
             STL.addContractor("Jesse");
+
             Properties.Settings.Default.ContractList.Add(STL);
 
         }
@@ -188,6 +216,10 @@ namespace Nielsen_PDF_Creator
             Hourly.addPDF("Invoice");
             Hourly.addPDF("Billing");
             Hourly.addPDF("Total");
+
+            Hourly.addContractor("Dean");
+            Hourly.addContractor("Ed");
+
             Properties.Settings.Default.ContractList.Add(Hourly);
         }
 
@@ -199,6 +231,9 @@ namespace Nielsen_PDF_Creator
             Metro.addPDF("Invoice");
             Metro.addPDF("Billing");
             Metro.addPDF("Total");
+
+            Metro.addContractor("Crew 24 Chris");
+
             Properties.Settings.Default.ContractList.Add(Metro);
 
         }
@@ -211,6 +246,9 @@ namespace Nielsen_PDF_Creator
             Rural.addPDF("Invoice");
             Rural.addPDF("Billing");
             Rural.addPDF("Total");
+
+            Rural.addContractor("Crew 24 Chris");
+
             Properties.Settings.Default.ContractList.Add(Rural);
         }
 
@@ -218,26 +256,28 @@ namespace Nielsen_PDF_Creator
         {
             String command = "";
             for (int i = 2; i < panel_pdfInput.Controls.Count; i++)
-             {
-                 if(panel_pdfInput.Controls[i] is TextBox)
-                 {
-                     command += " " + "\"" + panel_pdfInput.Controls[i].Text + "\"";
-                 }
+            {
+                if (panel_pdfInput.Controls[i] is TextBox)
+                {
+                    if (panel_pdfInput.Controls[i].Text.Equals("Select file..."))
+                    {
+                        Button button = (Button)panel_pdfInput.Controls[i + 1];
+                        System.Windows.Forms.MessageBox.Show("No file selected for " + button.Text);
+                        return;
+                    }
 
-                 if(panel_pdfInput.Controls[i] is CheckedListBox)
-                 {
-                     CheckedListBox listbox = (CheckedListBox)panel_pdfInput.Controls[i];
-                     foreach (var item in listbox.CheckedItems)
-                     {
-                         command += " " + "\"" + item.ToString() + " " + dateTime.ToString() + "\"";
-                     }
-                 }
+                    if (panel_pdfInput.Controls[i + 1].Text.Equals("Total"))
+                    {
+                        command += BuildSubs();
+                    }
+                    command += " " + "\"" + panel_pdfInput.Controls[i].Text + "\"";
+                }
 
-             }
+            }
 
-             command += " " + "cat";
-             command += " " + "output";
-             command += " " + "\"Test Report" + " " + dateTime.Text+ ".pdf\"";
+            command += " " + "cat";
+            command += " " + "output";
+            command += " " + "\"Test Report" + " " + dateTime.Text+ ".pdf\"";
              
 
             Process process = new Process();
@@ -247,6 +287,23 @@ namespace Nielsen_PDF_Creator
             process.Start();
             process.WaitForExit();// Waits here for the process to exit.
 
+        }
+
+        private string BuildSubs()
+        {
+            String command = "";
+            foreach (Control control in panel_pdfInput.Controls)
+            {
+                if (control is CheckedListBox)
+                {
+                    CheckedListBox listbox = (CheckedListBox)control;
+                    foreach (var item in listbox.CheckedItems)
+                    {
+                        command += " " + "\"" + item.ToString() + " " + dateTime.Text + ".pdf\"";
+                    }
+                }
+            }
+            return command;
         }
     }
 }

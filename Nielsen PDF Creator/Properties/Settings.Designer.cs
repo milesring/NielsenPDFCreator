@@ -33,5 +33,17 @@ namespace Nielsen_PDF_Creator.Properties {
                 this["ContractList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastFilePath {
+            get {
+                return ((string)(this["LastFilePath"]));
+            }
+            set {
+                this["LastFilePath"] = value;
+            }
+        }
     }
 }
