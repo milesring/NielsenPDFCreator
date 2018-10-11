@@ -14,6 +14,7 @@ namespace Nielsen_PDF_Creator
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -22,6 +23,7 @@ namespace Nielsen_PDF_Creator
         private void Form1_Load(object sender, EventArgs e)
         {
             Properties.Settings.Default.ContractList = null;
+            label_Status.Text = "";
             BuildContracts();
             for (int i = 0; i < Properties.Settings.Default.ContractList.Count; i++)
             {
@@ -98,6 +100,7 @@ namespace Nielsen_PDF_Creator
         {
             panel_pdfInput.Visible = true;
             panel_pdfInput.Enabled = true;
+            label_Status.Text = "";
             if (!textbox_WorkingFolder.Text.Equals(""))
             {
                 button_build.Enabled = true;
@@ -290,9 +293,19 @@ namespace Nielsen_PDF_Creator
             // Configure the process using the StartInfo properties.
             process.StartInfo.FileName = "pdftk";
             process.StartInfo.Arguments = command;
+            process.StartInfo.CreateNoWindow = true;
             process.Start();
             process.WaitForExit();// Waits here for the process to exit.
-            System.Windows.Forms.MessageBox.Show("Pdftk return code: "+process.ExitCode);
+            if(process.ExitCode == 0)
+            {
+                label_Status.Text = "Success!";
+                label_Status.ForeColor = Color.Green;
+            }
+            else
+            {
+                label_Status.Text = "Failure!";
+                label_Status.ForeColor = Color.Red;
+            }
 
         }
 

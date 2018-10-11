@@ -39,6 +39,7 @@
             this.label_WorkingFolder = new System.Windows.Forms.Label();
             this.textbox_WorkingFolder = new System.Windows.Forms.TextBox();
             this.button_WorkingFolder = new System.Windows.Forms.Button();
+            this.label_Status = new System.Windows.Forms.Label();
             this.panel_pdfInput.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -150,11 +151,23 @@
             this.button_WorkingFolder.UseVisualStyleBackColor = true;
             this.button_WorkingFolder.Click += new System.EventHandler(this.button_WorkingFolder_Click);
             // 
+            // label_Status
+            // 
+            this.label_Status.AutoSize = true;
+            this.label_Status.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Status.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label_Status.Location = new System.Drawing.Point(674, 376);
+            this.label_Status.Name = "label_Status";
+            this.label_Status.Size = new System.Drawing.Size(68, 25);
+            this.label_Status.TabIndex = 11;
+            this.label_Status.Text = "Status";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label_Status);
             this.Controls.Add(this.button_WorkingFolder);
             this.Controls.Add(this.textbox_WorkingFolder);
             this.Controls.Add(this.label_WorkingFolder);
@@ -186,6 +199,7 @@
         private System.Windows.Forms.Label label_WorkingFolder;
         private System.Windows.Forms.TextBox textbox_WorkingFolder;
         private System.Windows.Forms.Button button_WorkingFolder;
+        private System.Windows.Forms.Label label_Status;
     }
 }
 
