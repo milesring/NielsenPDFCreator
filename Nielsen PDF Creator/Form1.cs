@@ -220,7 +220,7 @@ namespace Nielsen_PDF_Creator
         private void BuildHourly()
         {
             Contract Hourly = new Contract();
-            Hourly.contractName = "Hourly";
+            Hourly.contractName = "HR";
             Hourly.contractNum = "234606-R1";
             Hourly.addPDF("Invoice");
             Hourly.addPDF("Billing");
@@ -263,6 +263,7 @@ namespace Nielsen_PDF_Creator
 
         private void button_build_Click(object sender, EventArgs e)
         {
+            int exitCode = 0;
             String command = "";
             for (int i = 2; i < panel_pdfInput.Controls.Count; i++)
             {
@@ -286,7 +287,7 @@ namespace Nielsen_PDF_Creator
 
             command += " " + "cat";
             command += " " + "output";
-            command += " " + "\"" + textbox_WorkingFolder.Text + "\\Test Report" + " " + dateTime.Text+ ".pdf\"";
+            command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text+ ".pdf\"";
              
 
             Process process = new Process();
@@ -296,7 +297,39 @@ namespace Nielsen_PDF_Creator
             process.StartInfo.CreateNoWindow = true;
             process.Start();
             process.WaitForExit();// Waits here for the process to exit.
-            if(process.ExitCode == 0)
+
+            exitCode += process.ExitCode;
+
+            command = "";
+
+            for (int i = 2; i < panel_pdfInput.Controls.Count; i++)
+            {
+                if (panel_pdfInput.Controls[i] is TextBox)
+                {
+                    if (panel_pdfInput.Controls[i + 1].Text.Equals("Invoice") || panel_pdfInput.Controls[i + 1].Text.Equals("Billing"))
+                    {
+                        command += " "+"\"" + panel_pdfInput.Controls[i].Text + "\"";
+                    }
+                }
+            }
+
+            command += " " + "cat";
+            command += " " + "output";
+            command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "Nielsen Invoice for WE " 
+                + dateTime.Text + " " + "Contract # " 
+                + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf";
+
+            process = new Process();
+            // Configure the process using the StartInfo properties.
+            process.StartInfo.FileName = "pdftk";
+            process.StartInfo.Arguments = command;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            process.WaitForExit();// Waits here for the process to exit.
+
+            exitCode += process.ExitCode;
+
+            if (process.ExitCode == 0)
             {
                 label_Status.Text = "Success!";
                 label_Status.ForeColor = Color.Green;
@@ -315,23 +348,7 @@ namespace Nielsen_PDF_Creator
             foreach (Control control in panel_pdfInput.Controls)
             {
 
-                String contract = "";
-                switch (combo_contracts.Text)
-                {
-                    case "URD":
-                        break;
-                    case "STL":
-                        break;
-                    case "Hourly":
-                        contract = "HR";
-                        break;
-                    case "Metro":
-                        break;
-                    case "Rural":
-                        break;
-                    default:
-                        break;
-                }
+                String contract = combo_contracts.Text;
 
                 if (control is CheckedListBox)
                 {
