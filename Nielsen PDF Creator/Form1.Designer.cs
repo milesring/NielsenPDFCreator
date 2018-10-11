@@ -36,6 +36,9 @@
             this.panel_pdfInput = new System.Windows.Forms.Panel();
             this.label_Contractors = new System.Windows.Forms.Label();
             this.label_pdfs = new System.Windows.Forms.Label();
+            this.label_WorkingFolder = new System.Windows.Forms.Label();
+            this.textbox_WorkingFolder = new System.Windows.Forms.TextBox();
+            this.button_WorkingFolder = new System.Windows.Forms.Button();
             this.panel_pdfInput.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,11 +121,43 @@
             this.label_pdfs.TabIndex = 1;
             this.label_pdfs.Text = "PDFs";
             // 
+            // label_WorkingFolder
+            // 
+            this.label_WorkingFolder.AutoSize = true;
+            this.label_WorkingFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_WorkingFolder.Location = new System.Drawing.Point(286, 39);
+            this.label_WorkingFolder.Name = "label_WorkingFolder";
+            this.label_WorkingFolder.Size = new System.Drawing.Size(100, 16);
+            this.label_WorkingFolder.TabIndex = 8;
+            this.label_WorkingFolder.Text = "Working Folder";
+            // 
+            // textbox_WorkingFolder
+            // 
+            this.textbox_WorkingFolder.Location = new System.Drawing.Point(392, 40);
+            this.textbox_WorkingFolder.Name = "textbox_WorkingFolder";
+            this.textbox_WorkingFolder.ReadOnly = true;
+            this.textbox_WorkingFolder.Size = new System.Drawing.Size(128, 20);
+            this.textbox_WorkingFolder.TabIndex = 9;
+            this.textbox_WorkingFolder.TextChanged += new System.EventHandler(this.textbox_WorkingFolder_TextChanged);
+            // 
+            // button_WorkingFolder
+            // 
+            this.button_WorkingFolder.Location = new System.Drawing.Point(526, 38);
+            this.button_WorkingFolder.Name = "button_WorkingFolder";
+            this.button_WorkingFolder.Size = new System.Drawing.Size(75, 23);
+            this.button_WorkingFolder.TabIndex = 10;
+            this.button_WorkingFolder.Text = "Browse";
+            this.button_WorkingFolder.UseVisualStyleBackColor = true;
+            this.button_WorkingFolder.Click += new System.EventHandler(this.button_WorkingFolder_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button_WorkingFolder);
+            this.Controls.Add(this.textbox_WorkingFolder);
+            this.Controls.Add(this.label_WorkingFolder);
             this.Controls.Add(this.panel_pdfInput);
             this.Controls.Add(this.label_date);
             this.Controls.Add(this.dateTime);
@@ -148,6 +183,9 @@
         private System.Windows.Forms.Panel panel_pdfInput;
         private System.Windows.Forms.Label label_pdfs;
         private System.Windows.Forms.Label label_Contractors;
+        private System.Windows.Forms.Label label_WorkingFolder;
+        private System.Windows.Forms.TextBox textbox_WorkingFolder;
+        private System.Windows.Forms.Button button_WorkingFolder;
     }
 }
 

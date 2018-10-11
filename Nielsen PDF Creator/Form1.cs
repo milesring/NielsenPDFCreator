@@ -65,9 +65,13 @@ namespace Nielsen_PDF_Creator
 
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
-                if (Properties.Settings.Default.LastFilePath.Equals(""))
+                if (Properties.Settings.Default.LastFilePath.Equals("") && textbox_WorkingFolder.Text.Equals(""))
                 {
                     openFileDialog1.InitialDirectory = "c:\\";
+                }
+                else if (!textbox_WorkingFolder.Text.Equals(""))
+                {
+                    openFileDialog1.InitialDirectory = textbox_WorkingFolder.Text;
                 }
                 else
                 {
@@ -86,7 +90,6 @@ namespace Nielsen_PDF_Creator
                     Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
                     int index = panel_pdfInput.Controls.IndexOf((Button)sender);
                     panel_pdfInput.Controls[index - 1].Text = fileName;
-                    //text_pdf1.Text = fileName;
                 }
             }
         }
@@ -95,7 +98,10 @@ namespace Nielsen_PDF_Creator
         {
             panel_pdfInput.Visible = true;
             panel_pdfInput.Enabled = true;
-            button_build.Enabled = true;
+            if (!textbox_WorkingFolder.Text.Equals(""))
+            {
+                button_build.Enabled = true;
+            }
             Label pdflabel = (Label)panel_pdfInput.Controls[0];
             Label contractorLabel = (Label)panel_pdfInput.Controls[1];
             panel_pdfInput.Controls.Clear();
@@ -277,7 +283,7 @@ namespace Nielsen_PDF_Creator
 
             command += " " + "cat";
             command += " " + "output";
-            command += " " + "\"Test Report" + " " + dateTime.Text+ ".pdf\"";
+            command += " " + "\"" + textbox_WorkingFolder.Text + "\\Test Report" + " " + dateTime.Text+ ".pdf\"";
              
 
             Process process = new Process();
@@ -286,6 +292,7 @@ namespace Nielsen_PDF_Creator
             process.StartInfo.Arguments = command;
             process.Start();
             process.WaitForExit();// Waits here for the process to exit.
+            System.Windows.Forms.MessageBox.Show("Pdftk return code: "+process.ExitCode);
 
         }
 
@@ -294,16 +301,58 @@ namespace Nielsen_PDF_Creator
             String command = "";
             foreach (Control control in panel_pdfInput.Controls)
             {
+
+                String contract = "";
+                switch (combo_contracts.Text)
+                {
+                    case "URD":
+                        break;
+                    case "STL":
+                        break;
+                    case "Hourly":
+                        contract = "HR";
+                        break;
+                    case "Metro":
+                        break;
+                    case "Rural":
+                        break;
+                    default:
+                        break;
+                }
+
                 if (control is CheckedListBox)
                 {
                     CheckedListBox listbox = (CheckedListBox)control;
                     foreach (var item in listbox.CheckedItems)
                     {
-                        command += " " + "\"" + item.ToString() + " " + dateTime.Text + ".pdf\"";
+                        command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " " + dateTime.Text + ".pdf\"";
+                        if (item.ToString().Equals("CBT"))
+                        {
+                            command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf\"";
+                        }
                     }
                 }
             }
             return command;
+        }
+
+        private void button_WorkingFolder_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog())
+            {
+                if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    textbox_WorkingFolder.Text = folderBrowserDialog1.SelectedPath;
+                }
+            }
+        }
+
+        private void textbox_WorkingFolder_TextChanged(object sender, EventArgs e)
+        {
+            if (!combo_contracts.Text.Equals("Select.."))
+            {
+                button_build.Enabled = true;
+            }
         }
     }
 }
