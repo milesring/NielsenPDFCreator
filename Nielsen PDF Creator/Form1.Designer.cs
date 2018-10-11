@@ -52,7 +52,6 @@
             this.label_contractbox.Size = new System.Drawing.Size(57, 16);
             this.label_contractbox.TabIndex = 1;
             this.label_contractbox.Text = "Contract";
-            this.label_contractbox.Click += new System.EventHandler(this.label1_Click);
             // 
             // combo_contracts
             // 

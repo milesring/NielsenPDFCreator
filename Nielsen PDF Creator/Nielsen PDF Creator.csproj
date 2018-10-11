@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LESContract.cs" />
     <Compile Include="Contract.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
