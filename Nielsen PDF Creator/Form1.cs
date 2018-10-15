@@ -432,11 +432,19 @@ namespace Nielsen_PDF_Creator
 
         private void button_WorkingFolder_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog())
+            using (new OffsetWinDialog(this) { PreferredOffset = new Point(75, 75) })
+            using (new SizeWinDialog(this) { PreferredSize = new Size(800, 800) })
             {
-                if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+                using (FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog())
                 {
-                    textbox_WorkingFolder.Text = folderBrowserDialog1.SelectedPath;
+                    if (!Properties.Settings.Default.LastFilePath.Equals(""))
+                    {
+                        folderBrowserDialog1.SelectedPath = Properties.Settings.Default.LastFilePath;
+                    }
+                    if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        textbox_WorkingFolder.Text = folderBrowserDialog1.SelectedPath;
+                    }
                 }
             }
         }
