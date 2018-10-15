@@ -22,9 +22,11 @@ namespace Nielsen_PDF_Creator
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ContractList = null;
             label_Status.Text = "";
-            BuildContracts();
+            if (Properties.Settings.Default.ContractList == null)
+            {
+                BuildContracts();
+            }
             for (int i = 0; i < Properties.Settings.Default.ContractList.Count; i++)
             {
                 combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
@@ -70,6 +72,7 @@ namespace Nielsen_PDF_Creator
                 {
                     fileName = openFileDialog1.FileName;
                     Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
+                    Properties.Settings.Default.Save();
                     int index = panel_pdfInput.Controls.IndexOf((Button)sender);
                     panel_pdfInput.Controls[index - 1].Text = fileName;
                 }
@@ -175,17 +178,14 @@ namespace Nielsen_PDF_Creator
 
         private void BuildContracts()
         {
-
-            if (Properties.Settings.Default.ContractList == null)
-            {
-                List<Contract> ContractList = new List<Contract>();
-                Properties.Settings.Default.ContractList = ContractList;
-            }
+            List<Contract> ContractList = new List<Contract>();
+            Properties.Settings.Default.ContractList = ContractList;
 
             BuildURD();
             BuildSTL();
             BuildHourly();
             BuildMetro();
+            BuildRural();
             BuildLES();
 
             Properties.Settings.Default.Save();
@@ -249,6 +249,7 @@ namespace Nielsen_PDF_Creator
             STL.addContractor("Jeff");
             STL.addContractor("Day Electric");
             STL.addContractor("Jesse");
+            STL.addContractor("Melvin");
 
             Properties.Settings.Default.ContractList.Add(STL);
 
@@ -279,7 +280,7 @@ namespace Nielsen_PDF_Creator
             Metro.addPDF("Total");
 
             Metro.addContractor("Crew 24 Chris");
-
+            Metro.addContractor("Omaha Concrete Sawing");
             Properties.Settings.Default.ContractList.Add(Metro);
 
         }

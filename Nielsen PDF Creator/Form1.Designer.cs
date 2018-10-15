@@ -135,7 +135,6 @@
             // 
             this.textbox_WorkingFolder.Location = new System.Drawing.Point(392, 40);
             this.textbox_WorkingFolder.Name = "textbox_WorkingFolder";
-            this.textbox_WorkingFolder.ReadOnly = true;
             this.textbox_WorkingFolder.Size = new System.Drawing.Size(128, 20);
             this.textbox_WorkingFolder.TabIndex = 9;
             this.textbox_WorkingFolder.TextChanged += new System.EventHandler(this.textbox_WorkingFolder_TextChanged);
