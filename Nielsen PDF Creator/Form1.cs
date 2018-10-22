@@ -144,6 +144,7 @@ namespace Nielsen_PDF_Creator
 
         private void DisplayLESInput()
         {
+            panel_Contractors.Controls.Clear();
             CheckedListBox clb = null;
             for (int i = 0; i < panel_pdfInput.Controls.Count; i++)
             {
@@ -153,15 +154,11 @@ namespace Nielsen_PDF_Creator
                     break;
                 }
             }
-            //Panel lesInput = new Panel();
-            //lesInput.Location = new System.Drawing.Point(clb.Location.X + 150, clb.Location.Y-30);
-            //lesInput.Size = new Size(lesInput.Size.Height, 250);
 
             Label label_input = new Label();
             label_input.Text = "PDF Input";
-            //label_input.Location = new System.Drawing.Point(lesInput.Location.X, lesInput.Location.Y);
 
-            //lesInput.Controls.Add(label_input);
+            panel_Contractors.Controls.Add(label_input);
             int x = 0;
             foreach(var item in clb.CheckedItems)
             {
@@ -171,8 +168,7 @@ namespace Nielsen_PDF_Creator
                 textBox.Location = new System.Drawing.Point(5, 30 + x * 30);
                 textBox.Width = 230;
                 textBox.Height = 23;
-                panel_pdfInput.Controls.Add(textBox);
-                //lesInput.Controls.Add(textBox);
+                panel_Contractors.Controls.Add(textBox);
 
                 Button button = new Button();
                 button.Text = "";
@@ -183,12 +179,10 @@ namespace Nielsen_PDF_Creator
                 button.Click += new EventHandler(button_pdf1browse_Click);
                 button.Visible = true;
                 button.Enabled = true;
-                panel_pdfInput.Controls.Add(button);
-                //lesInput.Controls.Add(button);
+                panel_Contractors.Controls.Add(button);
 
                 x++;
             }
-            //panel_pdfInput.Controls.Add(lesInput);
         }
 
         private void DisplayOPPD()
