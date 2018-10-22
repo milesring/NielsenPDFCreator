@@ -34,13 +34,11 @@
             this.dateTime = new System.Windows.Forms.DateTimePicker();
             this.label_date = new System.Windows.Forms.Label();
             this.panel_pdfInput = new System.Windows.Forms.Panel();
-            this.label_Contractors = new System.Windows.Forms.Label();
-            this.label_pdfs = new System.Windows.Forms.Label();
             this.label_WorkingFolder = new System.Windows.Forms.Label();
             this.textbox_WorkingFolder = new System.Windows.Forms.TextBox();
             this.button_WorkingFolder = new System.Windows.Forms.Button();
             this.label_Status = new System.Windows.Forms.Label();
-            this.panel_pdfInput.SuspendLayout();
+            this.panel_Contractors = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label_contractbox
@@ -94,32 +92,12 @@
             // 
             // panel_pdfInput
             // 
-            this.panel_pdfInput.Controls.Add(this.label_Contractors);
-            this.panel_pdfInput.Controls.Add(this.label_pdfs);
             this.panel_pdfInput.Enabled = false;
             this.panel_pdfInput.Location = new System.Drawing.Point(21, 108);
             this.panel_pdfInput.Name = "panel_pdfInput";
-            this.panel_pdfInput.Size = new System.Drawing.Size(647, 319);
+            this.panel_pdfInput.Size = new System.Drawing.Size(314, 319);
             this.panel_pdfInput.TabIndex = 7;
             this.panel_pdfInput.Visible = false;
-            // 
-            // label_Contractors
-            // 
-            this.label_Contractors.AutoSize = true;
-            this.label_Contractors.Location = new System.Drawing.Point(428, 4);
-            this.label_Contractors.Name = "label_Contractors";
-            this.label_Contractors.Size = new System.Drawing.Size(61, 13);
-            this.label_Contractors.TabIndex = 2;
-            this.label_Contractors.Text = "Contractors";
-            // 
-            // label_pdfs
-            // 
-            this.label_pdfs.AutoSize = true;
-            this.label_pdfs.Location = new System.Drawing.Point(12, 4);
-            this.label_pdfs.Name = "label_pdfs";
-            this.label_pdfs.Size = new System.Drawing.Size(33, 13);
-            this.label_pdfs.TabIndex = 1;
-            this.label_pdfs.Text = "PDFs";
             // 
             // label_WorkingFolder
             // 
@@ -160,11 +138,19 @@
             this.label_Status.TabIndex = 11;
             this.label_Status.Text = "Status";
             // 
+            // panel_Contractors
+            // 
+            this.panel_Contractors.Location = new System.Drawing.Point(352, 108);
+            this.panel_Contractors.Name = "panel_Contractors";
+            this.panel_Contractors.Size = new System.Drawing.Size(303, 319);
+            this.panel_Contractors.TabIndex = 12;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.panel_Contractors);
             this.Controls.Add(this.label_Status);
             this.Controls.Add(this.button_WorkingFolder);
             this.Controls.Add(this.textbox_WorkingFolder);
@@ -178,8 +164,6 @@
             this.Name = "Form1";
             this.Text = "Nielsen PDF Creator";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.panel_pdfInput.ResumeLayout(false);
-            this.panel_pdfInput.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,12 +176,11 @@
         private System.Windows.Forms.DateTimePicker dateTime;
         private System.Windows.Forms.Label label_date;
         private System.Windows.Forms.Panel panel_pdfInput;
-        private System.Windows.Forms.Label label_pdfs;
-        private System.Windows.Forms.Label label_Contractors;
         private System.Windows.Forms.Label label_WorkingFolder;
         private System.Windows.Forms.TextBox textbox_WorkingFolder;
         private System.Windows.Forms.Button button_WorkingFolder;
         private System.Windows.Forms.Label label_Status;
+        private System.Windows.Forms.Panel panel_Contractors;
     }
 }
 
