@@ -140,6 +140,7 @@
             // 
             // panel_Contractors
             // 
+            this.panel_Contractors.AutoScroll = true;
             this.panel_Contractors.Location = new System.Drawing.Point(352, 108);
             this.panel_Contractors.Name = "panel_Contractors";
             this.panel_Contractors.Size = new System.Drawing.Size(303, 319);

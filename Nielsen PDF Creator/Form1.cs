@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Nielsen_PDF_Creator
@@ -114,22 +110,21 @@ namespace Nielsen_PDF_Creator
         private void DisplayLESWOs()
         {
             panel_pdfInput.Controls.Clear();
+            panel_Contractors.Controls.Clear();
+
             Label label_WO = new Label();
             label_WO.Text = "Active Work Orders";
             panel_pdfInput.Controls.Add(label_WO);
 
             CheckedListBox checkedListBoxWOs = new CheckedListBox();
-            foreach (var item in Properties.Settings.Default.ContractList)
-            {
-                if (item is LESContract)
-                {
-                    LESContract contract = (LESContract)item;
-                    for (int i = 0; i < contract.woCount(); i++)
-                    {
-                        checkedListBoxWOs.Items.Add(contract.woAt(i), false);
-                    }
-                }
+            checkedListBoxWOs.Size = new Size(checkedListBoxWOs.Size.Width, checkedListBoxWOs.Size.Height * 2);
+
+            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
+
+            for (int i = 0; i < contract.woCount(); i++){
+                checkedListBoxWOs.Items.Add(contract.woAt(i), false);
             }
+
             checkedListBoxWOs.Location = new System.Drawing.Point(5, 30);
             checkedListBoxWOs.BackColor = System.Drawing.Color.FromName("Control");
             checkedListBoxWOs.BorderStyle = BorderStyle.None;
@@ -145,6 +140,8 @@ namespace Nielsen_PDF_Creator
         private void DisplayLESInput()
         {
             panel_Contractors.Controls.Clear();
+            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
+
             CheckedListBox clb = null;
             for (int i = 0; i < panel_pdfInput.Controls.Count; i++)
             {
@@ -159,29 +156,55 @@ namespace Nielsen_PDF_Creator
             label_input.Text = "PDF Input";
 
             panel_Contractors.Controls.Add(label_input);
-            int x = 0;
-            foreach(var item in clb.CheckedItems)
+            String[] woRequirements = new String[] {
+                "Nielsen Invoice", "LES Invoice Excel",
+                "A LES by Date", "Production for WO",
+                "B Year To Date Remaining Balance",
+                "L Total"
+            };
+            int y = 0;
+            for(int i = 0; i < clb.CheckedItems.Count; i++)
             {
-                TextBox textBox = new TextBox();
-                textBox.Text = item.ToString();
-                textBox.ReadOnly = true;
-                textBox.Location = new System.Drawing.Point(5, 30 + x * 30);
-                textBox.Width = 230;
-                textBox.Height = 23;
-                panel_Contractors.Controls.Add(textBox);
+                Label label = new Label();
+                label.Text = clb.CheckedItems[i].ToString();
+                y = 30 + i * 50 * woRequirements.Length;
+                label.Location = new System.Drawing.Point(0, y);
+                panel_Contractors.Controls.Add(label);
 
-                Button button = new Button();
-                button.Text = "";
-                button.Anchor = AnchorStyles.Top;
-                button.Location = new System.Drawing.Point(240, 30 + x * 30);
-                button.Width = 75;
-                button.Height = 23;
-                button.Click += new EventHandler(button_pdf1browse_Click);
-                button.Visible = true;
-                button.Enabled = true;
-                panel_Contractors.Controls.Add(button);
+                for(int j = 0; j < woRequirements.Length; j++)
+                {
+                    
+                    TextBox textBox = new TextBox();
+                    textBox.Text = woRequirements[j];
+                    textBox.ReadOnly = true;
+                    textBox.Location = new System.Drawing.Point(5, y + 30 + 30 * j);
+                    textBox.Width = 100;
+                    textBox.Height = 23;
+                    panel_Contractors.Controls.Add(textBox);
 
-                x++;
+                    Button button = new Button();
+                    button.Text = woRequirements[j];
+                    button.Anchor = AnchorStyles.Top;
+                    button.Location = new System.Drawing.Point(120, y + 30 + 30 * j);
+                    button.Width = 75;
+                    button.Height = 23;
+                    button.Click += new EventHandler(button_pdf1browse_Click);
+                    button.Visible = true;
+                    button.Enabled = true;
+                    panel_Contractors.Controls.Add(button);
+                }
+
+                CheckedListBox contractors = new CheckedListBox();
+                contractors.Location = new System.Drawing.Point(5, y + 35 * woRequirements.Length);
+                contractors.BackColor = System.Drawing.Color.FromName("Control");
+                contractors.BorderStyle = BorderStyle.None;
+                contractors.CheckOnClick = true;
+                for (int j = 0; j < contract.contractorCount(); j++)
+                {
+                    contractors.Items.Add(contract.contractorAt(j), false);
+                }
+                panel_Contractors.Controls.Add(contractors);
+
             }
         }
 
