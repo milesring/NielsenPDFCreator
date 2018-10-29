@@ -10,7 +10,7 @@ namespace Nielsen_PDF_Creator
 {
     public partial class Form1 : Form
     {
-
+        private List<String> fileList;
         public Form1()
         {
             InitializeComponent();
@@ -317,6 +317,9 @@ namespace Nielsen_PDF_Creator
             LES.addWO("5028705");
             LES.addWO("5029268");
             LES.addWO("5031156");
+            LES.addWO("5028659");
+            LES.addWO("5028703");
+
 
             LES.addContractor("CBT");
             LES.addContractor("Simon");
@@ -370,6 +373,7 @@ namespace Nielsen_PDF_Creator
 
             Metro.addContractor("Crew 24 Chris");
             Metro.addContractor("Fitzgerald");
+            Metro.addContractor("Central States");
             Metro.addContractor("Omaha Concrete Sawing");
             Properties.Settings.Default.ContractList.Add(Metro);
 
@@ -385,6 +389,8 @@ namespace Nielsen_PDF_Creator
             Rural.addPDF("Total");
 
             Rural.addContractor("Crew 24 Chris");
+            Rural.addContractor("Jesse");
+            Rural.addContractor("Jeff");
 
             Properties.Settings.Default.ContractList.Add(Rural);
         }
@@ -421,7 +427,9 @@ namespace Nielsen_PDF_Creator
         {
             int exitCode = 0;
             String command = "";
+            fileList = new List<String>();
 
+            //build TJ Report
             //aggregate main PDFs for report
             for (int i = 1; i < panel_pdfInput.Controls.Count; i++)
             {
@@ -436,40 +444,36 @@ namespace Nielsen_PDF_Creator
 
                     if (panel_pdfInput.Controls[i + 1].Text.Equals("Total"))
                     {
-                        command += BuildSubs();
+                        fileList = fileList.Concat(BuildSubsList()).ToList();
                     }
-                    command += " " + "\"" + panel_pdfInput.Controls[i].Text + "\"";
+                    fileList.Add(panel_pdfInput.Controls[i].Text);
                 }
 
             }
 
-            command += " " + "cat";
+            foreach (String fileItem in fileList)
+            {
+                command += "\"" + fileItem + "\" ";
+            }
+
+            command +="cat";
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-
             Process process = new Process();
-            // Configure the process using the StartInfo properties.
             process.StartInfo.FileName = "pdftk";
             process.StartInfo.Arguments = command;
             process.StartInfo.CreateNoWindow = true;
             process.Start();
-            process.WaitForExit();// Waits here for the process to exit.
+            process.WaitForExit();
 
             exitCode += process.ExitCode;
 
-            command = "";
 
-            for (int i = 1; i < panel_pdfInput.Controls.Count; i++)
-            {
-                if (panel_pdfInput.Controls[i] is TextBox)
-                {
-                    if (panel_pdfInput.Controls[i + 1].Text.Equals("Invoice") || panel_pdfInput.Controls[i + 1].Text.Equals("Billing"))
-                    {
-                        command += " " + "\"" + panel_pdfInput.Controls[i].Text + "\"";
-                    }
-                }
-            }
+            //Build Invoice PDF
+            command = "";
+            command += "\"" + fileList[0] + "\" ";
+            command += "\"" + fileList[1] + "\" ";
 
             command += " " + "cat";
             command += " " + "output";
@@ -478,12 +482,11 @@ namespace Nielsen_PDF_Creator
                 + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf";
 
             process = new Process();
-            // Configure the process using the StartInfo properties.
             process.StartInfo.FileName = "pdftk";
             process.StartInfo.Arguments = command;
             process.StartInfo.CreateNoWindow = true;
             process.Start();
-            process.WaitForExit();// Waits here for the process to exit.
+            process.WaitForExit();
 
             exitCode += process.ExitCode;
             return exitCode;
@@ -520,6 +523,30 @@ namespace Nielsen_PDF_Creator
                 }
             }
             return command;
+        }
+
+        private List<String> BuildSubsList()
+        {
+            List<String> subList = new List<string>();
+            foreach (Control control in panel_Contractors.Controls)
+            {
+
+                String contract = combo_contracts.Text;
+
+                if (control is CheckedListBox)
+                {
+                    CheckedListBox listbox = (CheckedListBox)control;
+                    foreach (var item in listbox.CheckedItems)
+                    {
+                        subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " " + dateTime.Text + ".pdf");
+                        if (item.ToString().Equals("CBT"))
+                        {
+                            subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf");
+                        }
+                    }
+                }
+            }
+            return subList;
         }
 
         private void button_WorkingFolder_Click(object sender, EventArgs e)

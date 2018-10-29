@@ -17,6 +17,7 @@ namespace Nielsen_PDF_Creator
         public void addWO(String wo)
         {
             workOrders.Add(wo);
+            workOrders.Sort();
         }
 
         public bool removeWO(String wo)
