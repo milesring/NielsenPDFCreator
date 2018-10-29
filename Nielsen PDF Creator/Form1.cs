@@ -73,7 +73,16 @@ namespace Nielsen_PDF_Creator
                     Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
                     Properties.Settings.Default.Save();
                     int index = panel_pdfInput.Controls.IndexOf((Button)sender);
-                    panel_pdfInput.Controls[index - 1].Text = fileName;
+                    if (index == -1)
+                    {
+                        index = panel_Contractors.Controls.IndexOf((Button)sender);
+                        panel_Contractors.Controls[index - 1].Text = fileName;
+                    }
+                    else
+                    {
+                        panel_pdfInput.Controls[index - 1].Text = fileName;
+                    }
+                    
                 }
             }
         }
@@ -108,6 +117,7 @@ namespace Nielsen_PDF_Creator
             //CheckedListBox listBox = (CheckedListBox)sender;
             //listBox.ClearSelected();
             DisplayLESInput();
+            label_Status.Text = "";
         }
         
         private void DisplayLESWOs()
@@ -154,41 +164,86 @@ namespace Nielsen_PDF_Creator
                     break;
                 }
             }
+            if (clb.CheckedItems.Count > 0)
+            {
+                Label label_input = new Label();
+                label_input.Text = "PDF Input";
 
-            Label label_input = new Label();
-            label_input.Text = "PDF Input";
+                panel_Contractors.Controls.Add(label_input);
+                String[] tjReportRequirements = new string[]
+                {
+                "Cam", "Kevin", "Masoud", "LES Overall", "Retainage"
+                };
 
-            panel_Contractors.Controls.Add(label_input);
-            String[] woRequirements = new String[] {
+                String[] woRequirements = new String[]
+                {
                 "Nielsen Invoice", "LES Invoice Excel",
                 "A LES by Date", "Production for WO",
                 "B Year To Date Remaining Balance",
                 "L Total"
-            };
-            int y = 0;
-            for(int i = 0; i < clb.CheckedItems.Count; i++)
-            {
-                Label label = new Label();
-                label.Text = clb.CheckedItems[i].ToString();
-                y = 30 + i * 40 * woRequirements.Length;
-                label.Location = new System.Drawing.Point(0, y);
-                panel_Contractors.Controls.Add(label);
+                };
 
-                for(int j = 0; j < woRequirements.Length; j++)
+                int y = 0;
+                for (int i = 0; i < clb.CheckedItems.Count; i++)
                 {
-                    
+                    Label label = new Label();
+                    label.Text = clb.CheckedItems[i].ToString();
+                    y = 30 + i * 40 * woRequirements.Length;
+                    label.Location = new System.Drawing.Point(0, y);
+                    panel_Contractors.Controls.Add(label);
+
+                    for (int j = 0; j < woRequirements.Length; j++)
+                    {
+
+                        TextBox textBox = new TextBox();
+                        textBox.Text = woRequirements[j];
+                        textBox.ReadOnly = true;
+                        textBox.Location = new System.Drawing.Point(5, y + 30 + 30 * j);
+                        textBox.Width = 100;
+                        textBox.Height = 23;
+                        panel_Contractors.Controls.Add(textBox);
+
+                        Button button = new Button();
+                        button.Text = woRequirements[j];
+                        button.Anchor = AnchorStyles.Top;
+                        button.Location = new System.Drawing.Point(120, y + 30 + 30 * j);
+                        button.Width = 75;
+                        button.Height = 23;
+                        button.Click += new EventHandler(button_pdf1browse_Click);
+                        button.Visible = true;
+                        button.Enabled = true;
+                        panel_Contractors.Controls.Add(button);
+                    }
+                }
+
+                CheckedListBox contractors = new CheckedListBox();
+                contractors.Location = new System.Drawing.Point(5, y + 35 * woRequirements.Length);
+                contractors.BackColor = System.Drawing.Color.FromName("Control");
+                contractors.BorderStyle = BorderStyle.None;
+                contractors.CheckOnClick = true;
+                for (int i = 0; i < contract.contractorCount(); i++)
+                {
+                    contractors.Items.Add(contract.contractorAt(i), false);
+                }
+                panel_Contractors.Controls.Add(contractors);
+
+
+                for (int i = 0; i < tjReportRequirements.Length; i++)
+                {
+
+
                     TextBox textBox = new TextBox();
-                    textBox.Text = woRequirements[j];
+                    textBox.Text = tjReportRequirements[i];
                     textBox.ReadOnly = true;
-                    textBox.Location = new System.Drawing.Point(5, y + 30 + 30 * j);
+                    textBox.Location = new System.Drawing.Point(5, y + 30 + 30 * woRequirements.Length + contractors.Size.Height + (i * 30));
                     textBox.Width = 100;
                     textBox.Height = 23;
                     panel_Contractors.Controls.Add(textBox);
 
                     Button button = new Button();
-                    button.Text = woRequirements[j];
+                    button.Text = tjReportRequirements[i];
                     button.Anchor = AnchorStyles.Top;
-                    button.Location = new System.Drawing.Point(120, y + 30 + 30 * j);
+                    button.Location = new System.Drawing.Point(120, y + 30 + 30 * woRequirements.Length + contractors.Size.Height + (i * 30));
                     button.Width = 75;
                     button.Height = 23;
                     button.Click += new EventHandler(button_pdf1browse_Click);
@@ -197,17 +252,6 @@ namespace Nielsen_PDF_Creator
                     panel_Contractors.Controls.Add(button);
                 }
             }
-
-            CheckedListBox contractors = new CheckedListBox();
-            contractors.Location = new System.Drawing.Point(5, y + 35 * woRequirements.Length);
-            contractors.BackColor = System.Drawing.Color.FromName("Control");
-            contractors.BorderStyle = BorderStyle.None;
-            contractors.CheckOnClick = true;
-            for (int i = 0; i < contract.contractorCount(); i++)
-            {
-                contractors.Items.Add(contract.contractorAt(i), false);
-            }
-            panel_Contractors.Controls.Add(contractors);
         }
 
         private void DisplayOPPD()
@@ -327,6 +371,7 @@ namespace Nielsen_PDF_Creator
             LES.addContractor("Simon");
             LES.addContractor("Atlas");
             LES.addContractor("Vicomm");
+            LES.addContractor("GPS");
 
             Properties.Settings.Default.ContractList.Add(LES);
         }
@@ -550,6 +595,7 @@ namespace Nielsen_PDF_Creator
         private int BuildLESPDFs()
         {
             int exitCode = 0;
+            String command = "";
             List<string> workOrders = new List<string>();
             fileList = new List<string>();
 
@@ -563,8 +609,32 @@ namespace Nielsen_PDF_Creator
                 {
                     fileList.Add(panel_Contractors.Controls[i].Text);
                 }
+                else if(panel_Contractors.Controls[i] is CheckedListBox)
+                {
+                    CheckedListBox clb = (CheckedListBox)panel_Contractors.Controls[i];
+                    foreach(String contractor in clb.CheckedItems)
+                    {
+                        fileList.Add(textbox_WorkingFolder.Text + "\\" + contractor + " " + dateTime.Text + ".pdf");
+                    }
+                }
             }
 
+            foreach (String file in fileList)
+            {
+                command += "\"" + file +"\" ";
+            }
+            command += "cat";
+            command += " " + "output";
+            command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
+
+            Process process = new Process();
+            process.StartInfo.FileName = "pdftk";
+            process.StartInfo.Arguments = command;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            process.WaitForExit();
+
+            exitCode += process.ExitCode;
 
             return exitCode;
         }
