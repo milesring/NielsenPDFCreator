@@ -11,6 +11,7 @@ namespace Nielsen_PDF_Creator
     public partial class Form1 : Form
     {
         private List<String> fileList;
+        private List<String> subList;
         public Form1()
         {
             InitializeComponent();
@@ -428,6 +429,7 @@ namespace Nielsen_PDF_Creator
             int exitCode = 0;
             String command = "";
             fileList = new List<String>();
+            
 
             //build TJ Report
             //aggregate main PDFs for report
@@ -444,16 +446,23 @@ namespace Nielsen_PDF_Creator
 
                     if (panel_pdfInput.Controls[i + 1].Text.Equals("Total"))
                     {
-                        fileList = fileList.Concat(BuildSubsList()).ToList();
+                        subList = BuildSubsList();
                     }
                     fileList.Add(panel_pdfInput.Controls[i].Text);
                 }
 
             }
 
-            foreach (String fileItem in fileList)
+            for (int i = 0; i < fileList.Count; i++)
             {
-                command += "\"" + fileItem + "\" ";
+                if(i == 2)
+                {
+                    foreach(String subItem in subList)
+                    {
+                        command += "\"" + subItem + "\" ";
+                    }
+                }
+                command += "\"" + fileList[i] + "\" ";
             }
 
             command +="cat";
@@ -489,6 +498,51 @@ namespace Nielsen_PDF_Creator
             process.WaitForExit();
 
             exitCode += process.ExitCode;
+
+            //Ask to clean up files
+            if(exitCode == 0)
+            {
+                var confirmResult = MessageBox.Show("Would you like to remove files used to build reports?",
+                                     "Confirm Delete!!",
+                                     MessageBoxButtons.YesNo);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    bool tryAgain;
+                    // If 'Yes', do something here.
+                    for (int i = 0; i < fileList.Count; i++)
+                    {
+                        tryAgain = true;
+                        while (tryAgain)
+                        {
+                            try
+                            {
+                                File.Delete(fileList[i]);
+                                tryAgain = false;
+                            }
+                            catch (DirectoryNotFoundException e)
+                            {
+                                MessageBox.Show("File: "+fileList[i]+" was already deleted.");
+                                tryAgain = false;
+
+                            }
+                            catch (IOException e)
+                            {
+                                MessageBox.Show("Please close "+fileList[i]);
+                            }
+                            catch (Exception e)
+                            {
+                                MessageBox.Show("Unknown error for "+fileList[i]);
+                                tryAgain = false;
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    // If 'No', do something here.
+                }
+            }
             return exitCode;
         }
 
