@@ -83,10 +83,8 @@ namespace Nielsen_PDF_Creator
             panel_Contractors.Visible = true;
             panel_Contractors.Enabled = true;
             label_Status.Text = "";
-            if (!textbox_WorkingFolder.Text.Equals(""))
-            {
-                button_build.Enabled = true;
-            }
+            textbox_WorkingFolder.Text = "";
+            button_build.Enabled = false;
 
             if (combo_contracts.Text.Equals("LES"))
             {
@@ -605,19 +603,20 @@ namespace Nielsen_PDF_Creator
 
         private void button_WorkingFolder_Click(object sender, EventArgs e)
         {
-            using (new OffsetWinDialog(this) { PreferredOffset = new Point(75, 75) })
-            using (new SizeWinDialog(this) { PreferredSize = new Size(800, 800) })
+            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
-                using (FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog())
+                openFileDialog1.ValidateNames = false;
+                openFileDialog1.CheckFileExists = false;
+                openFileDialog1.CheckPathExists = true;
+
+                openFileDialog1.FileName = "Folder Selection.";
+                int removalNum = openFileDialog1.FileName.Count();
+                String path = "";
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    if (!Properties.Settings.Default.LastFilePath.Equals(""))
-                    {
-                        folderBrowserDialog1.SelectedPath = Properties.Settings.Default.LastFilePath;
-                    }
-                    if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-                    {
-                        textbox_WorkingFolder.Text = folderBrowserDialog1.SelectedPath;
-                    }
+                    MessageBox.Show(openFileDialog1.FileName);
+                    path = openFileDialog1.FileName.Remove(openFileDialog1.FileName.Length - removalNum, removalNum);
+                    MessageBox.Show(path);
                 }
             }
         }
