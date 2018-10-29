@@ -614,9 +614,8 @@ namespace Nielsen_PDF_Creator
                 String path = "";
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    MessageBox.Show(openFileDialog1.FileName);
                     path = openFileDialog1.FileName.Remove(openFileDialog1.FileName.Length - removalNum, removalNum);
-                    MessageBox.Show(path);
+                    textbox_WorkingFolder.Text = path;
                 }
             }
         }
