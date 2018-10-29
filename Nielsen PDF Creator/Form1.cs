@@ -30,6 +30,8 @@ namespace Nielsen_PDF_Creator
             }
 
             button_build.Enabled = false;
+            textbox_WorkingFolder.Enabled = false;
+            button_WorkingFolder.Enabled = false;
 
         }
 
@@ -82,6 +84,8 @@ namespace Nielsen_PDF_Creator
             panel_pdfInput.Enabled = true;
             panel_Contractors.Visible = true;
             panel_Contractors.Enabled = true;
+            button_WorkingFolder.Enabled = true;
+            textbox_WorkingFolder.Enabled = true;
             label_Status.Text = "";
             textbox_WorkingFolder.Text = "";
             button_build.Enabled = false;
@@ -166,7 +170,7 @@ namespace Nielsen_PDF_Creator
             {
                 Label label = new Label();
                 label.Text = clb.CheckedItems[i].ToString();
-                y = 30 + i * 50 * woRequirements.Length;
+                y = 30 + i * 40 * woRequirements.Length;
                 label.Location = new System.Drawing.Point(0, y);
                 panel_Contractors.Controls.Add(label);
 
@@ -192,19 +196,18 @@ namespace Nielsen_PDF_Creator
                     button.Enabled = true;
                     panel_Contractors.Controls.Add(button);
                 }
-
-                CheckedListBox contractors = new CheckedListBox();
-                contractors.Location = new System.Drawing.Point(5, y + 35 * woRequirements.Length);
-                contractors.BackColor = System.Drawing.Color.FromName("Control");
-                contractors.BorderStyle = BorderStyle.None;
-                contractors.CheckOnClick = true;
-                for (int j = 0; j < contract.contractorCount(); j++)
-                {
-                    contractors.Items.Add(contract.contractorAt(j), false);
-                }
-                panel_Contractors.Controls.Add(contractors);
-
             }
+
+            CheckedListBox contractors = new CheckedListBox();
+            contractors.Location = new System.Drawing.Point(5, y + 35 * woRequirements.Length);
+            contractors.BackColor = System.Drawing.Color.FromName("Control");
+            contractors.BorderStyle = BorderStyle.None;
+            contractors.CheckOnClick = true;
+            for (int i = 0; i < contract.contractorCount(); i++)
+            {
+                contractors.Items.Add(contract.contractorAt(i), false);
+            }
+            panel_Contractors.Controls.Add(contractors);
         }
 
         private void DisplayOPPD()
@@ -215,7 +218,7 @@ namespace Nielsen_PDF_Creator
             pdfLabel.Location = new System.Drawing.Point(12, 4);
             pdfLabel.Text = "PDFs";
             Label contractorLabel = new Label();
-            contractorLabel.Location = new System.Drawing.Point(428, 4);
+            contractorLabel.Location = new System.Drawing.Point(12, 4);
             contractorLabel.Text = "Contractors";
 
             panel_pdfInput.Controls.Add(pdfLabel);
@@ -547,7 +550,20 @@ namespace Nielsen_PDF_Creator
         private int BuildLESPDFs()
         {
             int exitCode = 0;
+            List<string> workOrders = new List<string>();
+            fileList = new List<string>();
 
+            for (int i = 0; i < panel_Contractors.Controls.Count; i++)
+            {
+                if(panel_Contractors.Controls[i] is Label)
+                {
+                    workOrders.Add(panel_Contractors.Controls[i].Text);
+                }
+                else if(panel_Contractors.Controls[i] is TextBox)
+                {
+                    fileList.Add(panel_Contractors.Controls[i].Text);
+                }
+            }
 
 
             return exitCode;
