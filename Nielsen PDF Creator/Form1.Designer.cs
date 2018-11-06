@@ -63,6 +63,7 @@
             // 
             // button_build
             // 
+            this.button_build.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button_build.Location = new System.Drawing.Point(674, 404);
             this.button_build.Name = "button_build";
             this.button_build.Size = new System.Drawing.Size(75, 23);
@@ -73,6 +74,7 @@
             // 
             // dateTime
             // 
+            this.dateTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTime.CustomFormat = "M-d-yy";
             this.dateTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTime.Location = new System.Drawing.Point(721, 39);
@@ -82,6 +84,7 @@
             // 
             // label_date
             // 
+            this.label_date.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_date.AutoSize = true;
             this.label_date.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_date.Location = new System.Drawing.Point(648, 39);
@@ -129,6 +132,7 @@
             // 
             // label_Status
             // 
+            this.label_Status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label_Status.AutoSize = true;
             this.label_Status.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Status.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -162,6 +166,8 @@
             this.Controls.Add(this.button_build);
             this.Controls.Add(this.combo_contracts);
             this.Controls.Add(this.label_contractbox);
+            this.MaximumSize = new System.Drawing.Size(816, 489);
+            this.MinimumSize = new System.Drawing.Size(816, 489);
             this.Name = "Form1";
             this.Text = "Nielsen PDF Creator";
             this.Load += new System.EventHandler(this.Form1_Load);

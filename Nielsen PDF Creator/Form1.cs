@@ -72,16 +72,11 @@ namespace Nielsen_PDF_Creator
                     fileName = openFileDialog1.FileName;
                     Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
                     Properties.Settings.Default.Save();
-                    int index = panel_pdfInput.Controls.IndexOf((Button)sender);
-                    if (index == -1)
-                    {
-                        index = panel_Contractors.Controls.IndexOf((Button)sender);
-                        panel_Contractors.Controls[index - 1].Text = fileName;
-                    }
-                    else
-                    {
-                        panel_pdfInput.Controls[index - 1].Text = fileName;
-                    }
+                    //int index = panel_pdfInput.Controls.IndexOf((Button)sender);
+                    Button senderButton = (Button)sender;
+                    int index = senderButton.Parent.Controls.IndexOf(senderButton);
+                    senderButton.Parent.Controls[index - 1].Text = fileName;
+
                     
                 }
             }
@@ -116,7 +111,8 @@ namespace Nielsen_PDF_Creator
         {
             //CheckedListBox listBox = (CheckedListBox)sender;
             //listBox.ClearSelected();
-            DisplayLESInput();
+            //DisplayLESInput();
+            DisplayLESInputWCB();
             label_Status.Text = "";
         }
         
@@ -144,10 +140,6 @@ namespace Nielsen_PDF_Creator
             checkedListBoxWOs.CheckOnClick = true;
             checkedListBoxWOs.SelectedIndexChanged += new EventHandler(LESWOCheckboxChanged);
             panel_pdfInput.Controls.Add(checkedListBoxWOs);
-
-            
-            
-    
         }
 
         private void DisplayLESInput()
@@ -190,6 +182,7 @@ namespace Nielsen_PDF_Creator
                     label.Text = clb.CheckedItems[i].ToString();
                     y = 30 + i * 40 * woRequirements.Length;
                     label.Location = new System.Drawing.Point(0, y);
+
                     panel_Contractors.Controls.Add(label);
 
                     for (int j = 0; j < woRequirements.Length; j++)
@@ -250,6 +243,171 @@ namespace Nielsen_PDF_Creator
                     button.Visible = true;
                     button.Enabled = true;
                     panel_Contractors.Controls.Add(button);
+                }
+            }
+        }
+
+        private void DisplayLESInputWCB()
+        {
+            panel_Contractors.Controls.Clear();
+            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
+
+            CheckedListBox clb = null;
+            for (int i = 0; i < panel_pdfInput.Controls.Count; i++)
+            {
+                if (panel_pdfInput.Controls[i] is CheckedListBox)
+                {
+                    clb = (CheckedListBox)panel_pdfInput.Controls[i];
+                    break;
+                }
+            }
+            if (clb.CheckedItems.Count > 0)
+            {
+                Panel inputPanel;
+                CheckBox checkBox;
+                TextBox textBox;
+                Button button;
+
+                Label label = new Label();
+                label.Text = "PDF Input";
+
+                panel_Contractors.Controls.Add(label);
+                String[] tjReportRequirements = new string[]
+                {
+                "Cam", "Kevin", "Masoud", "LES Overall", "Retainage"
+                };
+
+                String[] woRequirements = new String[]
+                {
+                "Nielsen Invoice", "LES Invoice Excel",
+                "A LES by Date", "Production for WO",
+                "B Year To Date Remaining Balance",
+                "L Total"
+                };
+
+                for (int i = 0; i < clb.CheckedItems.Count; i++)
+                {       
+                    label = new Label();
+                    label.Text = clb.CheckedItems[i].ToString();
+                    label.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + label.Size.Height * 2);
+
+                    panel_Contractors.Controls.Add(label);
+                    
+
+                    for (int j = 0; j < woRequirements.Length; j++)
+                    {
+                        inputPanel = new Panel();
+                        inputPanel.Anchor = AnchorStyles.Top;
+                        inputPanel.Size = new Size(300, 25);
+                        inputPanel.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count-1].Location.Y+inputPanel.Size.Height);
+
+                        checkBox = new CheckBox();
+                        checkBox.Checked = true;
+                        checkBox.CheckedChanged += new EventHandler(checkbox_Custom_CheckChanged);
+                        checkBox.Size = new Size(20, 23);
+                        checkBox.Location = new System.Drawing.Point(10, 0);
+                        inputPanel.Controls.Add(checkBox);
+
+                        textBox = new TextBox();
+                        textBox.Text = woRequirements[j];
+                        textBox.ReadOnly = true;
+                        textBox.Location = new System.Drawing.Point(30, 0);
+                        textBox.Width = 100;
+                        textBox.Height = 23;
+                        inputPanel.Controls.Add(textBox);
+
+                        button = new Button();
+                        button.Text = woRequirements[j];
+                        button.Anchor = AnchorStyles.Top;
+                        button.Location = new System.Drawing.Point(135, 0);
+                        button.Width = 75;
+                        button.Height = 23;
+                        button.Click += new EventHandler(button_pdf1browse_Click);
+                        button.Visible = true;
+                        button.Enabled = true;
+                        inputPanel.Controls.Add(button);
+                        panel_Contractors.Controls.Add(inputPanel);
+                    }
+                }
+
+                label = new Label();
+                label.Text = "Contractors";
+                label.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + label.Size.Height * 2);
+                panel_Contractors.Controls.Add(label);
+
+                for (int i = 0; i < contract.contractorCount(); i++)
+                {
+                    inputPanel = new Panel();
+                    inputPanel.Anchor = AnchorStyles.Top;
+                    inputPanel.Size = new Size(300, 25);
+                    inputPanel.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + inputPanel.Size.Height);
+
+                    checkBox = new CheckBox();
+                    checkBox.Checked = true;
+                    checkBox.CheckedChanged += new EventHandler(checkbox_Custom_CheckChanged);
+                    checkBox.Size = new Size(20, 23);
+                    checkBox.Location = new System.Drawing.Point(10, 0);
+                    inputPanel.Controls.Add(checkBox);
+
+                    textBox = new TextBox();
+                    textBox.Text = contract.contractorAt(i);
+                    textBox.ReadOnly = true;
+                    textBox.Location = new System.Drawing.Point(30, 0);
+                    textBox.Width = 100;
+                    textBox.Height = 23;
+                    inputPanel.Controls.Add(textBox);
+
+                    button = new Button();
+                    button.Text = contract.contractorAt(i);
+                    button.Anchor = AnchorStyles.Top;
+                    button.Location = new System.Drawing.Point(135, 0);
+                    button.Width = 75;
+                    button.Height = 23;
+                    button.Click += new EventHandler(button_pdf1browse_Click);
+                    button.Visible = true;
+                    button.Enabled = true;
+                    inputPanel.Controls.Add(button);
+                    panel_Contractors.Controls.Add(inputPanel);
+                }
+
+                label = new Label();
+                label.Text = "TJ Report";
+                label.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + label.Size.Height * 2);
+                panel_Contractors.Controls.Add(label);
+
+                for (int i = 0; i < tjReportRequirements.Length; i++)
+                {
+                    inputPanel = new Panel();
+                    inputPanel.Anchor = AnchorStyles.Top;
+                    inputPanel.Size = new Size(300, 25);
+                    inputPanel.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + inputPanel.Size.Height);
+
+                    checkBox = new CheckBox();
+                    checkBox.Checked = true;
+                    checkBox.CheckedChanged += new EventHandler(checkbox_Custom_CheckChanged);
+                    checkBox.Size = new Size(20, 23);
+                    checkBox.Location = new System.Drawing.Point(10, 0);
+                    inputPanel.Controls.Add(checkBox);
+
+                    textBox = new TextBox();
+                    textBox.Text = tjReportRequirements[i];
+                    textBox.ReadOnly = true;
+                    textBox.Location = new System.Drawing.Point(30, 0);
+                    textBox.Width = 100;
+                    textBox.Height = 23;
+                    inputPanel.Controls.Add(textBox);
+
+                    button = new Button();
+                    button.Text = tjReportRequirements[i];
+                    button.Anchor = AnchorStyles.Top;
+                    button.Location = new System.Drawing.Point(135, 0);
+                    button.Width = 75;
+                    button.Height = 23;
+                    button.Click += new EventHandler(button_pdf1browse_Click);
+                    button.Visible = true;
+                    button.Enabled = true;
+                    inputPanel.Controls.Add(button);
+                    panel_Contractors.Controls.Add(inputPanel);
                 }
             }
         }
@@ -601,20 +759,26 @@ namespace Nielsen_PDF_Creator
 
             for (int i = 0; i < panel_Contractors.Controls.Count; i++)
             {
-                if(panel_Contractors.Controls[i] is Label)
+                if (panel_Contractors.Controls[i].GetType() == typeof(Panel))
                 {
-                    workOrders.Add(panel_Contractors.Controls[i].Text);
-                }
-                else if(panel_Contractors.Controls[i] is TextBox)
-                {
-                    fileList.Add(panel_Contractors.Controls[i].Text);
-                }
-                else if(panel_Contractors.Controls[i] is CheckedListBox)
-                {
-                    CheckedListBox clb = (CheckedListBox)panel_Contractors.Controls[i];
-                    foreach(String contractor in clb.CheckedItems)
+                    foreach (Control control in panel_Contractors.Controls[i].Controls)
                     {
-                        fileList.Add(textbox_WorkingFolder.Text + "\\" + contractor + " " + dateTime.Text + ".pdf");
+                        if (control.GetType() == typeof(TextBox))
+                        {
+                            TextBox tb = (TextBox)control;
+                            if (tb.Enabled)
+                            {
+                                fileList.Add(tb.Text);
+                            }
+                        }
+                        else if (control.GetType() == typeof(CheckedListBox))
+                        {
+                            CheckedListBox clb = (CheckedListBox)panel_Contractors.Controls[i];
+                            foreach (String contractor in clb.CheckedItems)
+                            {
+                                fileList.Add(textbox_WorkingFolder.Text + "\\" + contractor + " " + dateTime.Text + ".pdf");
+                            }
+                        }
                     }
                 }
             }
@@ -711,6 +875,20 @@ namespace Nielsen_PDF_Creator
             if (!combo_contracts.Text.Equals("Select.."))
             {
                 button_build.Enabled = true;
+            }
+        }
+
+        private void checkbox_Custom_CheckChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = (CheckBox)sender;
+            Panel panel = (Panel)cb.Parent;
+
+            foreach (Control control in panel.Controls)
+            {
+                if (control.GetType() != typeof(CheckBox))
+                {
+                    control.Enabled = cb.Checked;
+                }
             }
         }
     }
