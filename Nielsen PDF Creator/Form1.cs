@@ -865,7 +865,18 @@ namespace Nielsen_PDF_Creator
                 String path = "";
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    path = openFileDialog1.FileName.Remove(openFileDialog1.FileName.Length - removalNum, removalNum);
+                    string[] folders = openFileDialog1.FileName.Split('\\');
+                    for (int i = 0; i < folders.Length-1; i++)
+                    {
+                        if (i == folders.Length - 2)
+                        {
+                            path += folders[i];
+                        }
+                        else
+                        {
+                            path += folders[i] + "\\";
+                        }
+                    }
                     textbox_WorkingFolder.Text = path;
                 }
             }
