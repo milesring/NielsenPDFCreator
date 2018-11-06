@@ -12,6 +12,7 @@ namespace Nielsen_PDF_Creator
     {
         private List<String> fileList;
         private List<String> subList;
+        private String standardError;
         public Form1()
         {
             InitializeComponent();
@@ -620,6 +621,7 @@ namespace Nielsen_PDF_Creator
             {
                 label_Status.Text = "Success!";
                 label_Status.ForeColor = Color.Green;
+                //FileCleanup();
             }
             else
             {
@@ -704,50 +706,7 @@ namespace Nielsen_PDF_Creator
 
             exitCode += process.ExitCode;
 
-            //Ask to clean up files
-            if(exitCode == 0)
-            {
-                var confirmResult = MessageBox.Show("Would you like to remove files used to build reports?",
-                                     "Confirm Delete!!",
-                                     MessageBoxButtons.YesNo);
-                if (confirmResult == DialogResult.Yes)
-                {
-                    bool tryAgain;
-                    // If 'Yes', do something here.
-                    for (int i = 0; i < fileList.Count; i++)
-                    {
-                        tryAgain = true;
-                        while (tryAgain)
-                        {
-                            try
-                            {
-                                File.Delete(fileList[i]);
-                                tryAgain = false;
-                            }
-                            catch (DirectoryNotFoundException e)
-                            {
-                                MessageBox.Show("File: "+fileList[i]+" was already deleted.");
-                                tryAgain = false;
 
-                            }
-                            catch (IOException e)
-                            {
-                                MessageBox.Show("Please close "+fileList[i]);
-                            }
-                            catch (Exception e)
-                            {
-                                MessageBox.Show("Unknown error for "+fileList[i]);
-                                tryAgain = false;
-                            }
-                        }
-                    }
-
-                }
-                else
-                {
-                    // If 'No', do something here.
-                }
-            }
             return exitCode;
         }
 
@@ -796,11 +755,21 @@ namespace Nielsen_PDF_Creator
             process.StartInfo.FileName = "pdftk";
             process.StartInfo.Arguments = command;
             process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardError = true;
             process.Start();
+            String standardError = "";
+            while (!process.StandardError.EndOfStream)
+            {
+                standardError += process.StandardError.ReadLine()+"\n";
+            }
             process.WaitForExit();
 
             exitCode += process.ExitCode;
-
+            if (exitCode != 0)
+            {
+                MessageBox.Show(standardError);
+            }
             return exitCode;
         }
 
@@ -852,6 +821,45 @@ namespace Nielsen_PDF_Creator
             return subList;
         }
 
+        private void FileCleanup()
+        {
+                var confirmResult = MessageBox.Show("Would you like to remove files used to build reports?",
+                                     "Confirm Delete!!",
+                                     MessageBoxButtons.YesNo);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    bool tryAgain;
+                    for (int i = 0; i < fileList.Count; i++)
+                    {
+                        tryAgain = true;
+                        while (tryAgain)
+                        {
+                            try
+                            {
+                                File.Delete(fileList[i]);
+                                tryAgain = false;
+                            }
+                            catch (DirectoryNotFoundException e)
+                            {
+                                MessageBox.Show("File: " + fileList[i] + " was already deleted.");
+                                tryAgain = false;
+
+                            }
+                            catch (IOException e)
+                            {
+                                MessageBox.Show("Please close " + fileList[i]);
+                            }
+                            catch (Exception e)
+                            {
+                                MessageBox.Show("Unknown error for " + fileList[i]);
+                                tryAgain = false;
+                            }
+                        }
+                    }
+
+                }
+        }
+        
         private void button_WorkingFolder_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
