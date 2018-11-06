@@ -72,7 +72,6 @@ namespace Nielsen_PDF_Creator
                     fileName = openFileDialog1.FileName;
                     Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
                     Properties.Settings.Default.Save();
-                    //int index = panel_pdfInput.Controls.IndexOf((Button)sender);
                     Button senderButton = (Button)sender;
                     int index = senderButton.Parent.Controls.IndexOf(senderButton);
                     senderButton.Parent.Controls[index - 1].Text = fileName;
@@ -138,6 +137,8 @@ namespace Nielsen_PDF_Creator
             checkedListBoxWOs.BackColor = System.Drawing.Color.FromName("Control");
             checkedListBoxWOs.BorderStyle = BorderStyle.None;
             checkedListBoxWOs.CheckOnClick = true;
+            //checkedListBoxWOs.Anchor = AnchorStyles.Bottom & AnchorStyles.Top & AnchorStyles.Left & AnchorStyles.Right;
+            checkedListBoxWOs.Size = new Size(panel_pdfInput.Size.Width, panel_pdfInput.Size.Height);
             checkedListBoxWOs.SelectedIndexChanged += new EventHandler(LESWOCheckboxChanged);
             panel_pdfInput.Controls.Add(checkedListBoxWOs);
         }

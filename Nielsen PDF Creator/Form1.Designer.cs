@@ -95,6 +95,9 @@
             // 
             // panel_pdfInput
             // 
+            this.panel_pdfInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_pdfInput.Enabled = false;
             this.panel_pdfInput.Location = new System.Drawing.Point(21, 108);
             this.panel_pdfInput.Name = "panel_pdfInput";
@@ -144,6 +147,9 @@
             // 
             // panel_Contractors
             // 
+            this.panel_Contractors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_Contractors.AutoScroll = true;
             this.panel_Contractors.Location = new System.Drawing.Point(352, 108);
             this.panel_Contractors.Name = "panel_Contractors";
@@ -166,7 +172,6 @@
             this.Controls.Add(this.button_build);
             this.Controls.Add(this.combo_contracts);
             this.Controls.Add(this.label_contractbox);
-            this.MaximumSize = new System.Drawing.Size(816, 489);
             this.MinimumSize = new System.Drawing.Size(816, 489);
             this.Name = "Form1";
             this.Text = "Nielsen PDF Creator";
