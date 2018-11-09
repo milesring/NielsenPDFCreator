@@ -731,14 +731,6 @@ namespace Nielsen_PDF_Creator
                                 fileList.Add(tb.Text);
                             }
                         }
-                        else if (control.GetType() == typeof(CheckedListBox))
-                        {
-                            CheckedListBox clb = (CheckedListBox)panel_Contractors.Controls[i];
-                            foreach (String contractor in clb.CheckedItems)
-                            {
-                                fileList.Add(textbox_WorkingFolder.Text + "\\" + contractor + " " + dateTime.Text + ".pdf");
-                            }
-                        }
                     }
                 }
             }
