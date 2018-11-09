@@ -12,7 +12,8 @@ namespace Nielsen_PDF_Creator
     {
         private List<String> fileList;
         private List<String> subList;
-        private String standardError;
+        private String standardError = "";
+
         public Form1()
         {
             InitializeComponent();
@@ -36,83 +37,137 @@ namespace Nielsen_PDF_Creator
 
         }
 
-        private void checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void BuildContracts()
         {
-            CheckedListBox listBox = (CheckedListBox)sender;
-            listBox.ClearSelected();
-        }
+            List<Contract> ContractList = new List<Contract>();
+            Properties.Settings.Default.ContractList = ContractList;
 
-        private void button_pdf1browse_Click(object sender, EventArgs e)
-        {
+            BuildURD();
+            BuildSTL();
+            BuildHourly();
+            BuildMetro();
+            BuildRural();
+            BuildLES();
 
-            string fileName = null;
-
-            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
-            {
-                if (Properties.Settings.Default.LastFilePath.Equals("") && textbox_WorkingFolder.Text.Equals(""))
-                {
-                    openFileDialog1.InitialDirectory = "c:\\";
-                }
-                else if (!textbox_WorkingFolder.Text.Equals(""))
-                {
-                    openFileDialog1.InitialDirectory = textbox_WorkingFolder.Text;
-                }
-                else
-                {
-                    openFileDialog1.InitialDirectory = Properties.Settings.Default.LastFilePath;
-                }
-                
-                openFileDialog1.Filter = "pdf files (*.pdf)|*.pdf";
-                openFileDialog1.FilterIndex = 2;
-                openFileDialog1.RestoreDirectory = true;
-
-                
-
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    fileName = openFileDialog1.FileName;
-                    Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
-                    Properties.Settings.Default.Save();
-                    Button senderButton = (Button)sender;
-                    int index = senderButton.Parent.Controls.IndexOf(senderButton);
-                    senderButton.Parent.Controls[index - 1].Text = fileName;
-
-                    
-                }
-            }
-        }
-
-        private void combo_contracts_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            panel_pdfInput.Visible = true;
-            panel_pdfInput.Enabled = true;
-            panel_Contractors.Visible = true;
-            panel_Contractors.Enabled = true;
-            button_WorkingFolder.Enabled = true;
-            textbox_WorkingFolder.Enabled = true;
-            label_Status.Text = "";
-            textbox_WorkingFolder.Text = "";
-            button_build.Enabled = false;
-
-            if (combo_contracts.Text.Equals("LES"))
-            {
-
-                DisplayLESWOs();
-            }
-            else
-            {
-                DisplayOPPD();
-            }
-
+            Properties.Settings.Default.Save();
 
         }
 
-        private void LESWOCheckboxChanged(object sender, EventArgs e)
+        private void BuildURD()
         {
-            DisplayLESInput();
-            label_Status.Text = "";
+            Contract URD = new Contract();
+            URD.contractName = "URD";
+            URD.contractNum = "213640";
+            URD.addPDF("Invoice");
+            URD.addPDF("Billing");
+            URD.addPDF("Total");
+
+            URD.addContractor("CBT");
+            URD.addContractor("Central States");
+            URD.addContractor("Crew 24 Chris");
+            URD.addContractor("Fitzgerald");
+            URD.addContractor("Jeff");
+            URD.addContractor("Jesse");
+
+
+            Properties.Settings.Default.ContractList.Add(URD);
         }
-        
+
+        private void BuildLES()
+        {
+            LESContract LES = new LESContract();
+            LES.contractName = "LES";
+
+            LES.addWO("5028651");
+            LES.addWO("5028652");
+            LES.addWO("5028653");
+            LES.addWO("5028657");
+            LES.addWO("5028658");
+            LES.addWO("5028661");
+            LES.addWO("5028702");
+            LES.addWO("5028704");
+            LES.addWO("5028705");
+            LES.addWO("5029268");
+            LES.addWO("5031156");
+            LES.addWO("5028659");
+            LES.addWO("5028703");
+
+
+            LES.addContractor("CBT");
+            LES.addContractor("Simon");
+            LES.addContractor("Atlas");
+            LES.addContractor("Vicomm");
+            LES.addContractor("GPS");
+
+            Properties.Settings.Default.ContractList.Add(LES);
+        }
+
+        private void BuildSTL()
+        {
+            Contract STL = new Contract();
+            STL.contractName = "STL";
+            STL.contractNum = "224709";
+            STL.addPDF("Invoice");
+            STL.addPDF("Billing");
+            STL.addPDF("Total");
+
+            STL.addContractor("Jeff");
+            STL.addContractor("Day Electric");
+            STL.addContractor("Jesse");
+            STL.addContractor("Melvin");
+
+            Properties.Settings.Default.ContractList.Add(STL);
+
+        }
+
+        private void BuildHourly()
+        {
+            Contract Hourly = new Contract();
+            Hourly.contractName = "HR";
+            Hourly.contractNum = "234606-R1";
+            Hourly.addPDF("Invoice");
+            Hourly.addPDF("Billing");
+            Hourly.addPDF("Total");
+
+            Hourly.addContractor("Dean");
+            Hourly.addContractor("Ed");
+
+            Properties.Settings.Default.ContractList.Add(Hourly);
+        }
+
+        private void BuildMetro()
+        {
+            Contract Metro = new Contract();
+            Metro.contractName = "Metro";
+            Metro.contractNum = "202757";
+            Metro.addPDF("Invoice");
+            Metro.addPDF("Billing");
+            Metro.addPDF("Total");
+
+            Metro.addContractor("Crew 24 Chris");
+            Metro.addContractor("Fitzgerald");
+            Metro.addContractor("Central States");
+            Metro.addContractor("Omaha Concrete Sawing");
+            Properties.Settings.Default.ContractList.Add(Metro);
+
+        }
+
+        private void BuildRural()
+        {
+            Contract Rural = new Contract();
+            Rural.contractName = "Rural";
+            Rural.contractNum = "201026";
+            Rural.addPDF("Invoice");
+            Rural.addPDF("Billing");
+            Rural.addPDF("Total");
+
+            Rural.addContractor("Crew 24 Chris");
+            Rural.addContractor("Jesse");
+            Rural.addContractor("Jeff");
+
+            Properties.Settings.Default.ContractList.Add(Rural);
+        }
+
         private void DisplayLESWOs()
         {
             panel_pdfInput.Controls.Clear();
@@ -127,7 +182,8 @@ namespace Nielsen_PDF_Creator
 
             LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
 
-            for (int i = 0; i < contract.woCount(); i++){
+            for (int i = 0; i < contract.woCount(); i++)
+            {
                 checkedListBoxWOs.Items.Add(contract.woAt(i), false);
             }
 
@@ -180,20 +236,20 @@ namespace Nielsen_PDF_Creator
                 };
 
                 for (int i = 0; i < clb.CheckedItems.Count; i++)
-                {       
+                {
                     label = new Label();
                     label.Text = clb.CheckedItems[i].ToString();
                     label.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + label.Size.Height * 2);
 
                     panel_Contractors.Controls.Add(label);
-                    
+
 
                     for (int j = 0; j < woRequirements.Length; j++)
                     {
                         inputPanel = new Panel();
                         inputPanel.Anchor = AnchorStyles.Top;
                         inputPanel.Size = new Size(300, 25);
-                        inputPanel.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count-1].Location.Y+inputPanel.Size.Height);
+                        inputPanel.Location = new System.Drawing.Point(0, panel_Contractors.Controls[panel_Contractors.Controls.Count - 1].Location.Y + inputPanel.Size.Height);
 
                         checkBox = new CheckBox();
                         checkBox.Checked = true;
@@ -363,166 +419,6 @@ namespace Nielsen_PDF_Creator
             }
         }
 
-        private void BuildContracts()
-        {
-            List<Contract> ContractList = new List<Contract>();
-            Properties.Settings.Default.ContractList = ContractList;
-
-            BuildURD();
-            BuildSTL();
-            BuildHourly();
-            BuildMetro();
-            BuildRural();
-            BuildLES();
-
-            Properties.Settings.Default.Save();
-
-        }
-
-        private void BuildURD()
-        {
-            Contract URD = new Contract();
-            URD.contractName = "URD";
-            URD.contractNum = "213640";
-            URD.addPDF("Invoice");
-            URD.addPDF("Billing");
-            URD.addPDF("Total");
-
-            URD.addContractor("CBT");
-            URD.addContractor("Central States");
-            URD.addContractor("Crew 24 Chris");
-            URD.addContractor("Fitzgerald");
-            URD.addContractor("Jeff");
-            URD.addContractor("Jesse");
-
-
-            Properties.Settings.Default.ContractList.Add(URD);
-        }
-
-        private void BuildLES()
-        {
-            LESContract LES = new LESContract();
-            LES.contractName = "LES";
-
-            LES.addWO("5028651");
-            LES.addWO("5028652");
-            LES.addWO("5028653");
-            LES.addWO("5028657");
-            LES.addWO("5028658");
-            LES.addWO("5028661");
-            LES.addWO("5028702");
-            LES.addWO("5028704");
-            LES.addWO("5028705");
-            LES.addWO("5029268");
-            LES.addWO("5031156");
-            LES.addWO("5028659");
-            LES.addWO("5028703");
-
-
-            LES.addContractor("CBT");
-            LES.addContractor("Simon");
-            LES.addContractor("Atlas");
-            LES.addContractor("Vicomm");
-            LES.addContractor("GPS");
-
-            Properties.Settings.Default.ContractList.Add(LES);
-        }
-
-        private void BuildSTL()
-        {
-            Contract STL = new Contract();
-            STL.contractName = "STL";
-            STL.contractNum = "224709";
-            STL.addPDF("Invoice");
-            STL.addPDF("Billing");
-            STL.addPDF("Total");
-
-            STL.addContractor("Jeff");
-            STL.addContractor("Day Electric");
-            STL.addContractor("Jesse");
-            STL.addContractor("Melvin");
-
-            Properties.Settings.Default.ContractList.Add(STL);
-
-        }
-
-        private void BuildHourly()
-        {
-            Contract Hourly = new Contract();
-            Hourly.contractName = "HR";
-            Hourly.contractNum = "234606-R1";
-            Hourly.addPDF("Invoice");
-            Hourly.addPDF("Billing");
-            Hourly.addPDF("Total");
-
-            Hourly.addContractor("Dean");
-            Hourly.addContractor("Ed");
-
-            Properties.Settings.Default.ContractList.Add(Hourly);
-        }
-
-        private void BuildMetro()
-        {
-            Contract Metro = new Contract();
-            Metro.contractName = "Metro";
-            Metro.contractNum = "202757";
-            Metro.addPDF("Invoice");
-            Metro.addPDF("Billing");
-            Metro.addPDF("Total");
-
-            Metro.addContractor("Crew 24 Chris");
-            Metro.addContractor("Fitzgerald");
-            Metro.addContractor("Central States");
-            Metro.addContractor("Omaha Concrete Sawing");
-            Properties.Settings.Default.ContractList.Add(Metro);
-
-        }
-
-        private void BuildRural()
-        {
-            Contract Rural = new Contract();
-            Rural.contractName = "Rural";
-            Rural.contractNum = "201026";
-            Rural.addPDF("Invoice");
-            Rural.addPDF("Billing");
-            Rural.addPDF("Total");
-
-            Rural.addContractor("Crew 24 Chris");
-            Rural.addContractor("Jesse");
-            Rural.addContractor("Jeff");
-
-            Properties.Settings.Default.ContractList.Add(Rural);
-        }
-
-        private void button_build_Click(object sender, EventArgs e)
-        {
-            int exitCode = 0;
-
-            if (combo_contracts.Text.Equals("LES"))
-            {
-              exitCode = BuildLESPDFs();
-            }
-            else
-            {
-              exitCode = BuildOPPDPDFs();
-            }
-
-          
-
-            if (exitCode == 0)
-            {
-                label_Status.Text = "Success!";
-                label_Status.ForeColor = Color.Green;
-                //FileCleanup();
-            }
-            else
-            {
-                label_Status.Text = "Failure!";
-                label_Status.ForeColor = Color.Red;
-            }
-
-        }
-
         private int BuildOPPDPDFs()
         {
             int exitCode = 0;
@@ -572,7 +468,13 @@ namespace Nielsen_PDF_Creator
             process.StartInfo.FileName = "pdftk";
             process.StartInfo.Arguments = command;
             process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardError = true;
             process.Start();
+            while (!process.StandardError.EndOfStream)
+            {
+                standardError += process.StandardError.ReadLine() + "\n";
+            }
             process.WaitForExit();
 
             exitCode += process.ExitCode;
@@ -597,7 +499,6 @@ namespace Nielsen_PDF_Creator
             process.WaitForExit();
 
             exitCode += process.ExitCode;
-
 
             return exitCode;
         }
@@ -642,7 +543,6 @@ namespace Nielsen_PDF_Creator
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardError = true;
             process.Start();
-            String standardError = "";
             while (!process.StandardError.EndOfStream)
             {
                 standardError += process.StandardError.ReadLine()+"\n";
@@ -650,10 +550,6 @@ namespace Nielsen_PDF_Creator
             process.WaitForExit();
 
             exitCode += process.ExitCode;
-            if (exitCode != 0)
-            {
-                MessageBox.Show(standardError);
-            }
             return exitCode;
         }
 
@@ -795,5 +691,115 @@ namespace Nielsen_PDF_Creator
                 }
             }
         }
+
+        private void button_build_Click(object sender, EventArgs e)
+        {
+            int exitCode = 0;
+
+            if (combo_contracts.Text.Equals("LES"))
+            {
+                exitCode = BuildLESPDFs();
+            }
+            else
+            {
+                exitCode = BuildOPPDPDFs();
+            }
+
+
+
+            if (exitCode == 0)
+            {
+                label_Status.Text = "Success!";
+                label_Status.ForeColor = Color.Green;
+                FileCleanup();
+            }
+            else
+            {
+
+                label_Status.Text = "Failure!";
+                label_Status.ForeColor = Color.Red;
+                MessageBox.Show(standardError);
+                standardError = "";
+            }
+
+        }
+
+        private void checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckedListBox listBox = (CheckedListBox)sender;
+            listBox.ClearSelected();
+        }
+
+        private void button_pdf1browse_Click(object sender, EventArgs e)
+        {
+
+            string fileName = null;
+
+            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+            {
+                if (Properties.Settings.Default.LastFilePath.Equals("") && textbox_WorkingFolder.Text.Equals(""))
+                {
+                    openFileDialog1.InitialDirectory = "c:\\";
+                }
+                else if (!textbox_WorkingFolder.Text.Equals(""))
+                {
+                    openFileDialog1.InitialDirectory = textbox_WorkingFolder.Text;
+                }
+                else
+                {
+                    openFileDialog1.InitialDirectory = Properties.Settings.Default.LastFilePath;
+                }
+
+                openFileDialog1.Filter = "pdf files (*.pdf)|*.pdf";
+                openFileDialog1.FilterIndex = 2;
+                openFileDialog1.RestoreDirectory = true;
+
+
+
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = openFileDialog1.FileName;
+                    Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
+                    Properties.Settings.Default.Save();
+                    Button senderButton = (Button)sender;
+                    int index = senderButton.Parent.Controls.IndexOf(senderButton);
+                    senderButton.Parent.Controls[index - 1].Text = fileName;
+
+
+                }
+            }
+        }
+
+        private void combo_contracts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            panel_pdfInput.Visible = true;
+            panel_pdfInput.Enabled = true;
+            panel_Contractors.Visible = true;
+            panel_Contractors.Enabled = true;
+            button_WorkingFolder.Enabled = true;
+            textbox_WorkingFolder.Enabled = true;
+            label_Status.Text = "";
+            textbox_WorkingFolder.Text = "";
+            button_build.Enabled = false;
+
+            if (combo_contracts.Text.Equals("LES"))
+            {
+
+                DisplayLESWOs();
+            }
+            else
+            {
+                DisplayOPPD();
+            }
+
+
+        }
+
+        private void LESWOCheckboxChanged(object sender, EventArgs e)
+        {
+            DisplayLESInput();
+            label_Status.Text = "";
+        }
+
     }
 }
