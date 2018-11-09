@@ -227,6 +227,15 @@ namespace Nielsen_PDF_Creator
                 "Cam", "Kevin", "Masoud", "LES Overall", "Retainage"
                 };
 
+                String[] tjReportRequirementDescriptions = new string[]
+                {
+                    "Report from Access, DD Cam (from beginning of week to billing date)",
+                    "Report from Access, DD Kevin (from beginning of week to billing date)",
+                    "Report from Access, DD Masoud (from beginning of week to billing date)",
+                    "Report from Access, B Year to Date Overall (from 1/1/[year] to billing date)",
+                    "PDF of Retainage Excel sheet"
+                };
+
                 String[] woRequirements = new String[]
                 {
                 "Nielsen Invoice", "LES Invoice Excel",
@@ -234,6 +243,17 @@ namespace Nielsen_PDF_Creator
                 "B Year To Date Remaining Balance",
                 "L Total"
                 };
+
+                String[] requirementDescriptions = new String[]
+                {
+                    "Invoice made from QB", "Invoice made from excel sheet",
+                    "Report from Access, A LES by Date (beginning of week to end of week)",
+                    "Production for the specific work order sent from Nielsen in Lincoln",
+                    "Report from Access, B Year to Date Remaining Balance (from 1/1/[year] to billing date)",
+                    "Report from Access, L Total"
+
+                };
+
 
                 for (int i = 0; i < clb.CheckedItems.Count; i++)
                 {
@@ -256,6 +276,13 @@ namespace Nielsen_PDF_Creator
                         checkBox.CheckedChanged += new EventHandler(checkbox_Custom_CheckChanged);
                         checkBox.Size = new Size(20, 23);
                         checkBox.Location = new System.Drawing.Point(10, 0);
+
+                        ToolTip toolTip = new ToolTip();
+                        toolTip.AutoPopDelay = 5000;
+                        toolTip.InitialDelay = 1000;
+                        toolTip.ReshowDelay = 500;
+                        toolTip.SetToolTip(checkBox, "Enables or disables the pdf in the report");
+
                         inputPanel.Controls.Add(checkBox);
 
                         textBox = new TextBox();
@@ -264,6 +291,13 @@ namespace Nielsen_PDF_Creator
                         textBox.Location = new System.Drawing.Point(30, 0);
                         textBox.Width = 100;
                         textBox.Height = 23;
+
+                        toolTip = new ToolTip();
+                        toolTip.AutoPopDelay = 5000;
+                        toolTip.InitialDelay = 1000;
+                        toolTip.ReshowDelay = 500;
+                        toolTip.SetToolTip(textBox, requirementDescriptions[j]);
+
                         inputPanel.Controls.Add(textBox);
 
                         button = new Button();
@@ -275,6 +309,13 @@ namespace Nielsen_PDF_Creator
                         button.Click += new EventHandler(button_pdf1browse_Click);
                         button.Visible = true;
                         button.Enabled = true;
+
+                        toolTip = new ToolTip();
+                        toolTip.AutoPopDelay = 5000;
+                        toolTip.InitialDelay = 1000;
+                        toolTip.ReshowDelay = 500;
+                        toolTip.SetToolTip(button, requirementDescriptions[j]);
+
                         inputPanel.Controls.Add(button);
                         panel_Contractors.Controls.Add(inputPanel);
                     }
@@ -297,6 +338,13 @@ namespace Nielsen_PDF_Creator
                     checkBox.CheckedChanged += new EventHandler(checkbox_Custom_CheckChanged);
                     checkBox.Size = new Size(20, 23);
                     checkBox.Location = new System.Drawing.Point(10, 0);
+
+                    ToolTip toolTip = new ToolTip();
+                    toolTip.AutoPopDelay = 5000;
+                    toolTip.InitialDelay = 1000;
+                    toolTip.ReshowDelay = 500;
+                    toolTip.SetToolTip(checkBox, "Enables or disables the pdf in the report");
+
                     inputPanel.Controls.Add(checkBox);
 
                     textBox = new TextBox();
@@ -316,6 +364,13 @@ namespace Nielsen_PDF_Creator
                     button.Click += new EventHandler(button_pdf1browse_Click);
                     button.Visible = true;
                     button.Enabled = true;
+
+                    toolTip = new ToolTip();
+                    toolTip.AutoPopDelay = 5000;
+                    toolTip.InitialDelay = 1000;
+                    toolTip.ReshowDelay = 500;
+                    toolTip.SetToolTip(button, "Report from Access, C Sub by Sub Number and Date");
+
                     inputPanel.Controls.Add(button);
                     panel_Contractors.Controls.Add(inputPanel);
                 }
@@ -337,6 +392,13 @@ namespace Nielsen_PDF_Creator
                     checkBox.CheckedChanged += new EventHandler(checkbox_Custom_CheckChanged);
                     checkBox.Size = new Size(20, 23);
                     checkBox.Location = new System.Drawing.Point(10, 0);
+
+                    ToolTip toolTip = new ToolTip();
+                    toolTip.AutoPopDelay = 5000;
+                    toolTip.InitialDelay = 1000;
+                    toolTip.ReshowDelay = 500;
+                    toolTip.SetToolTip(checkBox, "Enables or disables the pdf in the report");
+
                     inputPanel.Controls.Add(checkBox);
 
                     textBox = new TextBox();
@@ -356,6 +418,13 @@ namespace Nielsen_PDF_Creator
                     button.Click += new EventHandler(button_pdf1browse_Click);
                     button.Visible = true;
                     button.Enabled = true;
+
+                    toolTip = new ToolTip();
+                    toolTip.AutoPopDelay = 5000;
+                    toolTip.InitialDelay = 1000;
+                    toolTip.ReshowDelay = 500;
+                    toolTip.SetToolTip(button, tjReportRequirementDescriptions[i]);
+
                     inputPanel.Controls.Add(button);
                     panel_Contractors.Controls.Add(inputPanel);
                 }
