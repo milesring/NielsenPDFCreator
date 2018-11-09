@@ -109,10 +109,7 @@ namespace Nielsen_PDF_Creator
 
         private void LESWOCheckboxChanged(object sender, EventArgs e)
         {
-            //CheckedListBox listBox = (CheckedListBox)sender;
-            //listBox.ClearSelected();
-            //DisplayLESInput();
-            DisplayLESInputWCB();
+            DisplayLESInput();
             label_Status.Text = "";
         }
         
@@ -145,111 +142,6 @@ namespace Nielsen_PDF_Creator
         }
 
         private void DisplayLESInput()
-        {
-            panel_Contractors.Controls.Clear();
-            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
-
-            CheckedListBox clb = null;
-            for (int i = 0; i < panel_pdfInput.Controls.Count; i++)
-            {
-                if(panel_pdfInput.Controls[i] is CheckedListBox)
-                {
-                    clb = (CheckedListBox)panel_pdfInput.Controls[i];
-                    break;
-                }
-            }
-            if (clb.CheckedItems.Count > 0)
-            {
-                Label label_input = new Label();
-                label_input.Text = "PDF Input";
-
-                panel_Contractors.Controls.Add(label_input);
-                String[] tjReportRequirements = new string[]
-                {
-                "Cam", "Kevin", "Masoud", "LES Overall", "Retainage"
-                };
-
-                String[] woRequirements = new String[]
-                {
-                "Nielsen Invoice", "LES Invoice Excel",
-                "A LES by Date", "Production for WO",
-                "B Year To Date Remaining Balance",
-                "L Total"
-                };
-
-                int y = 0;
-                for (int i = 0; i < clb.CheckedItems.Count; i++)
-                {
-                    Label label = new Label();
-                    label.Text = clb.CheckedItems[i].ToString();
-                    y = 30 + i * 40 * woRequirements.Length;
-                    label.Location = new System.Drawing.Point(0, y);
-
-                    panel_Contractors.Controls.Add(label);
-
-                    for (int j = 0; j < woRequirements.Length; j++)
-                    {
-
-                        TextBox textBox = new TextBox();
-                        textBox.Text = woRequirements[j];
-                        textBox.ReadOnly = true;
-                        textBox.Location = new System.Drawing.Point(5, y + 30 + 30 * j);
-                        textBox.Width = 100;
-                        textBox.Height = 23;
-                        panel_Contractors.Controls.Add(textBox);
-
-                        Button button = new Button();
-                        button.Text = woRequirements[j];
-                        button.Anchor = AnchorStyles.Top;
-                        button.Location = new System.Drawing.Point(120, y + 30 + 30 * j);
-                        button.Width = 75;
-                        button.Height = 23;
-                        button.Click += new EventHandler(button_pdf1browse_Click);
-                        button.Visible = true;
-                        button.Enabled = true;
-                        panel_Contractors.Controls.Add(button);
-                    }
-                }
-
-                CheckedListBox contractors = new CheckedListBox();
-                contractors.Location = new System.Drawing.Point(5, y + 35 * woRequirements.Length);
-                contractors.BackColor = System.Drawing.Color.FromName("Control");
-                contractors.BorderStyle = BorderStyle.None;
-                contractors.CheckOnClick = true;
-                for (int i = 0; i < contract.contractorCount(); i++)
-                {
-                    contractors.Items.Add(contract.contractorAt(i), false);
-                }
-                panel_Contractors.Controls.Add(contractors);
-
-
-                for (int i = 0; i < tjReportRequirements.Length; i++)
-                {
-
-
-                    TextBox textBox = new TextBox();
-                    textBox.Text = tjReportRequirements[i];
-                    textBox.ReadOnly = true;
-                    textBox.Location = new System.Drawing.Point(5, y + 30 + 30 * woRequirements.Length + contractors.Size.Height + (i * 30));
-                    textBox.Width = 100;
-                    textBox.Height = 23;
-                    panel_Contractors.Controls.Add(textBox);
-
-                    Button button = new Button();
-                    button.Text = tjReportRequirements[i];
-                    button.Anchor = AnchorStyles.Top;
-                    button.Location = new System.Drawing.Point(120, y + 30 + 30 * woRequirements.Length + contractors.Size.Height + (i * 30));
-                    button.Width = 75;
-                    button.Height = 23;
-                    button.Click += new EventHandler(button_pdf1browse_Click);
-                    button.Visible = true;
-                    button.Enabled = true;
-                    panel_Contractors.Controls.Add(button);
-                }
-            }
-        }
-
-        private void DisplayLESInputWCB()
         {
             panel_Contractors.Controls.Clear();
             LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
