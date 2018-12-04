@@ -68,6 +68,7 @@ namespace Nielsen_PDF_Creator
             URD.addContractor("Fitzgerald");
             URD.addContractor("Jeff");
             URD.addContractor("Jesse");
+            URD.addContractor("JJ Drilling");
 
 
             Properties.Settings.Default.ContractList.Add(URD);
@@ -91,6 +92,8 @@ namespace Nielsen_PDF_Creator
             LES.addWO("5031156");
             LES.addWO("5028659");
             LES.addWO("5028703");
+            LES.addWO("5029267");
+            LES.addWO("5028654");
 
 
             LES.addContractor("CBT");
@@ -190,10 +193,13 @@ namespace Nielsen_PDF_Creator
             checkedListBoxWOs.Location = new System.Drawing.Point(5, 30);
             checkedListBoxWOs.BackColor = System.Drawing.Color.FromName("Control");
             checkedListBoxWOs.BorderStyle = BorderStyle.None;
-            checkedListBoxWOs.CheckOnClick = true;
+            checkedListBoxWOs.CheckOnClick = false;
             //checkedListBoxWOs.Anchor = AnchorStyles.Bottom & AnchorStyles.Top & AnchorStyles.Left & AnchorStyles.Right;
             checkedListBoxWOs.Size = new Size(panel_pdfInput.Size.Width, panel_pdfInput.Size.Height);
             checkedListBoxWOs.SelectedIndexChanged += new EventHandler(LESWOCheckboxChanged);
+
+            //CHANGE TO THIS 11/9/18
+            //checkedListBoxWOs.ItemCheck += new EventHandler(LESWOCheckboxChanged);
             panel_pdfInput.Controls.Add(checkedListBoxWOs);
         }
 
@@ -622,30 +628,6 @@ namespace Nielsen_PDF_Creator
             return exitCode;
         }
 
-        private string BuildSubs()
-        {
-            String command = "";
-            foreach (Control control in panel_Contractors.Controls)
-            {
-
-                String contract = combo_contracts.Text;
-
-                if (control is CheckedListBox)
-                {
-                    CheckedListBox listbox = (CheckedListBox)control;
-                    foreach (var item in listbox.CheckedItems)
-                    {
-                        command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " " + dateTime.Text + ".pdf\"";
-                        if (item.ToString().Equals("CBT"))
-                        {
-                            command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf\"";
-                        }
-                    }
-                }
-            }
-            return command;
-        }
-
         private List<String> BuildSubsList()
         {
             List<String> subList = new List<string>();
@@ -661,6 +643,11 @@ namespace Nielsen_PDF_Creator
                     {
                         subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " " + dateTime.Text + ".pdf");
                         if (item.ToString().Equals("CBT"))
+                        {
+                            subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf");
+                        }
+
+                        if (contract.Equals("URD") && item.ToString().Equals("Central States"))
                         {
                             subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf");
                         }
@@ -780,7 +767,9 @@ namespace Nielsen_PDF_Creator
             {
                 label_Status.Text = "Success!";
                 label_Status.ForeColor = Color.Green;
-                FileCleanup();
+                
+                //CURRENTLY NOT NEEDED(DANGEROUS) 11/9/18
+                //FileCleanup();
             }
             else
             {
