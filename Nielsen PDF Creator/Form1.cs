@@ -22,6 +22,8 @@ namespace Nielsen_PDF_Creator
         private void Form1_Load(object sender, EventArgs e)
         {
             label_Status.Text = "";
+            Properties.Settings.Default.ContractList = null;
+
             if (Properties.Settings.Default.ContractList == null)
             {
                 BuildContracts();
@@ -48,7 +50,8 @@ namespace Nielsen_PDF_Creator
             BuildMetro();
             BuildRural();
             BuildLES();
-
+            BuildCustom();
+           
             Properties.Settings.Default.Save();
 
         }
@@ -77,7 +80,7 @@ namespace Nielsen_PDF_Creator
         private void BuildLES()
         {
             LESContract LES = new LESContract();
-            LES.contractName = "LES";
+            LES.contractName = "LES 2018";
 
             LES.addWO("5028651");
             LES.addWO("5028652");
@@ -95,7 +98,6 @@ namespace Nielsen_PDF_Creator
             LES.addWO("5029267");
             LES.addWO("5028654");
             LES.addWO("5028660");
-            LES.addWO("5031483");
 
             LES.addContractor("CBT");
             LES.addContractor("Simon");
@@ -104,6 +106,17 @@ namespace Nielsen_PDF_Creator
             LES.addContractor("GPS");
 
             Properties.Settings.Default.ContractList.Add(LES);
+
+            LESContract LES2019 = new LESContract();
+            LES2019.contractName = "LES 2019";
+            LES2019.addWO("5031483");
+            LES2019.addContractor("CBT");
+            LES2019.addContractor("Simon");
+            LES2019.addContractor("Atlas");
+            LES2019.addContractor("Vicomm");
+            LES2019.addContractor("GPS");
+            Properties.Settings.Default.ContractList.Add(LES2019);
+
         }
 
         private void BuildSTL()
@@ -172,6 +185,14 @@ namespace Nielsen_PDF_Creator
             Properties.Settings.Default.ContractList.Add(Rural);
         }
 
+        private void BuildCustom()
+        {
+            Contract custom = new Contract();
+            custom.contractName = "Add new...";
+
+            Properties.Settings.Default.ContractList.Add(custom);
+        }
+
         private void DisplayLESWOs()
         {
             panel_pdfInput.Controls.Clear();
@@ -184,7 +205,7 @@ namespace Nielsen_PDF_Creator
             CheckedListBox checkedListBoxWOs = new CheckedListBox();
             checkedListBoxWOs.Size = new Size(checkedListBoxWOs.Size.Width, checkedListBoxWOs.Size.Height * 2);
 
-            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
+            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract && x.contractName == combo_contracts.Text);
 
             for (int i = 0; i < contract.woCount(); i++)
             {
@@ -497,6 +518,21 @@ namespace Nielsen_PDF_Creator
                 checkedList.CheckOnClick = true;
                 checkedList.SelectedIndexChanged += new EventHandler(checkedListBox_SelectedIndexChanged);
             }
+        }
+
+        private void DisplayContractBuilder()
+        {
+            //TODO: move from combo box of contracts to a settings window
+            panel_pdfInput.Controls.Clear();
+            panel_Contractors.Controls.Clear();
+            button_build.Enabled = false;
+            label_Status.Text = "";
+
+            //TODO: display type of contract desired in checkbox/radio/whatever
+            //TODO: add contract name
+            //TODO: add contract number
+            //TODO: add contractors to contract
+            //TODO:
         }
 
         private int BuildOPPDPDFs()
@@ -855,10 +891,14 @@ namespace Nielsen_PDF_Creator
             textbox_WorkingFolder.Text = "";
             button_build.Enabled = false;
 
-            if (combo_contracts.Text.Equals("LES"))
+            if (combo_contracts.Text.Contains("LES"))
             {
 
                 DisplayLESWOs();
+            }
+            else if(combo_contracts.Text.Equals("Add new..."))
+            {
+                DisplayContractBuilder();
             }
             else
             {
