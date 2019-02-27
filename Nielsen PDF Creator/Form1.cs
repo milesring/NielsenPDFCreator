@@ -575,7 +575,13 @@ namespace Nielsen_PDF_Creator
             process.StartInfo.FileName = "pdftk";
             process.StartInfo.Arguments = command;
             process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardError = true;
             process.Start();
+            while (!process.StandardError.EndOfStream)
+            {
+                standardError += process.StandardError.ReadLine() + "\n";
+            }
             process.WaitForExit();
 
             exitCode += process.ExitCode;
