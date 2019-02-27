@@ -94,7 +94,8 @@ namespace Nielsen_PDF_Creator
             LES.addWO("5028703");
             LES.addWO("5029267");
             LES.addWO("5028654");
-
+            LES.addWO("5028660");
+            LES.addWO("5031483");
 
             LES.addContractor("CBT");
             LES.addContractor("Simon");
@@ -201,7 +202,11 @@ namespace Nielsen_PDF_Creator
             //CHANGE TO THIS 11/9/18
             //checkedListBoxWOs.ItemCheck += new EventHandler(LESWOCheckboxChanged);
             panel_pdfInput.Controls.Add(checkedListBoxWOs);
-        }
+
+            
+
+        
+    }
 
         private void DisplayLESInput()
         {
@@ -646,11 +651,6 @@ namespace Nielsen_PDF_Creator
                         {
                             subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf");
                         }
-
-                        if (contract.Equals("URD") && item.ToString().Equals("Central States"))
-                        {
-                            subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf");
-                        }
                     }
                 }
             }
@@ -709,21 +709,27 @@ namespace Nielsen_PDF_Creator
                 String path = "";
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string[] folders = openFileDialog1.FileName.Split('\\');
-                    for (int i = 0; i < folders.Length-1; i++)
-                    {
-                        if (i == folders.Length - 2)
-                        {
-                            path += folders[i];
-                        }
-                        else
-                        {
-                            path += folders[i] + "\\";
-                        }
-                    }
-                    textbox_WorkingFolder.Text = path;
+                    textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);
                 }
             }
+        }
+
+        private String trimPath(String path)
+        {
+            String returnPath = "";
+            string[] folders = path.Split('\\');
+            for (int i = 0; i < folders.Length - 1; i++)
+            {
+                if (i == folders.Length - 2)
+                {
+                    returnPath += folders[i];
+                }
+                else
+                {
+                    returnPath += folders[i] + "\\";
+                }
+            }
+            return returnPath;
         }
 
         private void textbox_WorkingFolder_TextChanged(object sender, EventArgs e)
@@ -823,7 +829,10 @@ namespace Nielsen_PDF_Creator
                     int index = senderButton.Parent.Controls.IndexOf(senderButton);
                     senderButton.Parent.Controls[index - 1].Text = fileName;
 
-
+                    if(textbox_WorkingFolder.Text == "")
+                    {
+                        textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);
+                    }
                 }
             }
         }
