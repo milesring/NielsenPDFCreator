@@ -800,7 +800,7 @@ namespace Nielsen_PDF_Creator
         {
             int exitCode = 0;
 
-            if (combo_contracts.Text.Equals("LES"))
+            if (combo_contracts.Text.Contains("LES"))
             {
                 exitCode = BuildLESPDFs();
             }
