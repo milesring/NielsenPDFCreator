@@ -39,6 +39,7 @@
             this.button_WorkingFolder = new System.Windows.Forms.Button();
             this.label_Status = new System.Windows.Forms.Label();
             this.panel_Contractors = new System.Windows.Forms.Panel();
+            this.btn_addtoQueue = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label_contractbox
@@ -64,9 +65,9 @@
             // button_build
             // 
             this.button_build.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_build.Location = new System.Drawing.Point(674, 404);
+            this.button_build.Location = new System.Drawing.Point(674, 383);
             this.button_build.Name = "button_build";
-            this.button_build.Size = new System.Drawing.Size(75, 23);
+            this.button_build.Size = new System.Drawing.Size(114, 23);
             this.button_build.TabIndex = 4;
             this.button_build.Text = "Build PDFs";
             this.button_build.UseVisualStyleBackColor = true;
@@ -139,7 +140,7 @@
             this.label_Status.AutoSize = true;
             this.label_Status.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Status.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label_Status.Location = new System.Drawing.Point(674, 376);
+            this.label_Status.Location = new System.Drawing.Point(681, 416);
             this.label_Status.Name = "label_Status";
             this.label_Status.Size = new System.Drawing.Size(68, 25);
             this.label_Status.TabIndex = 11;
@@ -156,11 +157,22 @@
             this.panel_Contractors.Size = new System.Drawing.Size(303, 319);
             this.panel_Contractors.TabIndex = 12;
             // 
+            // btn_addtoQueue
+            // 
+            this.btn_addtoQueue.Location = new System.Drawing.Point(674, 354);
+            this.btn_addtoQueue.Name = "btn_addtoQueue";
+            this.btn_addtoQueue.Size = new System.Drawing.Size(114, 23);
+            this.btn_addtoQueue.TabIndex = 13;
+            this.btn_addtoQueue.Text = "Add to Queue";
+            this.btn_addtoQueue.UseVisualStyleBackColor = true;
+            this.btn_addtoQueue.Click += new System.EventHandler(this.btn_addtoQueue_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btn_addtoQueue);
             this.Controls.Add(this.panel_Contractors);
             this.Controls.Add(this.label_Status);
             this.Controls.Add(this.button_WorkingFolder);
@@ -193,6 +205,7 @@
         private System.Windows.Forms.Button button_WorkingFolder;
         private System.Windows.Forms.Label label_Status;
         private System.Windows.Forms.Panel panel_Contractors;
+        private System.Windows.Forms.Button btn_addtoQueue;
     }
 }
 

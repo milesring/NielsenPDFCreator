@@ -1,0 +1,72 @@
+Requirements:
+Build List of selected pdfs into 2 pdfs, (OPPD Invoice, TJ Report): DONE
+Input Contractors: TODO
+Use pdftk server: DONE
+
+Ideas:
+
+*Windows forms: DONE
+*check boxes for contractors, with the ability to add/remove contractors from memory
+*guides for each contract
+*add/remove slots for pdfs to be entered into reports (in case oppd/les change requirements in future)
+*select contract, list of required pdfs show up (possible option to add more pdfs to certain contractors, i.e. cbt payment)
+
+FUTURE:
+
+Features for just combining/manipulating PDFs for the company, watermark?
+..split pdf by pages
+..rotate pages
+..encrypt with pw
+..etc
+
+
+
+LES contract:
+
+enable checkboxlist with all WOs
+
+	EACH WO
+	*Invoice
+	*LES Invoice Sheet PDF
+	*A LES by Date(can be optional, in case of only billing carlson invoice)
+	*Production on WO from LES/Cam
+	*B Year To Date Remaining Balance (1/1/18 - current date)
+	*L Total
+	
+TJ Report
+
+*Each WO
+*Each sub+gps in alphabetical
+*cam
+*kevin
+*masoud
+*B Year to Date Overall (LES Overall *Date*)
+*Retainage
+	
+	
+CURRENT TODO 10/15/18:
+Messages for failures.
+Fix working directory button - DONE 10/15/18
+build les out - DONE
+
+10/29/18:
+Clear working directory on contract change. DONE
+
+11/5/18:
+Messages for failures.
+Help/Tool tips when hovering over fields - DONE FOR LES, NEED URD
+Scaling of the app on resize
+For selectable inputs (ie carlson only for a single LES WO), use individual panels containing checkbox, filepath textbox, and browse button. enable/disable by using checkbox.
+
+11/19/18:
+Update OPPD to LES input style
+ADD/REMOVE contractors
+ADD/REMOVE pdfs for each contractor
+Help/Tool tips when hovering over fields - DONE FOR LES, NEED URD
+Scaling of the app on resize
+
+3/4/19:
+Add build queue
+view/edit queue
+settings window to edit contracts/contractors
+save last location used per contract

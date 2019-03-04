@@ -13,6 +13,7 @@ namespace Nielsen_PDF_Creator
         private List<String> fileList;
         private List<String> subList;
         private String standardError = "";
+        private Queue<String> buildQueue;
 
         public Form1()
         {
@@ -33,10 +34,13 @@ namespace Nielsen_PDF_Creator
                 combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
             }
 
+            buildQueue = new Queue<string>();
+
             button_build.Enabled = false;
+            button_build.Text = "Build PDFs " + "(" + buildQueue.Count() + ")";
             textbox_WorkingFolder.Enabled = false;
             button_WorkingFolder.Enabled = false;
-
+            btn_addtoQueue.Enabled = false;
         }
 
         private void BuildContracts()
@@ -536,12 +540,11 @@ namespace Nielsen_PDF_Creator
             //TODO:
         }
 
-        private int BuildOPPDPDFs()
+        private void QueueOPPDPDFs()
         {
-            int exitCode = 0;
             String command = "";
             fileList = new List<String>();
-            
+
 
             //build TJ Report
             //aggregate main PDFs for report
@@ -553,7 +556,6 @@ namespace Nielsen_PDF_Creator
                     {
                         Button button = (Button)panel_pdfInput.Controls[i + 1];
                         System.Windows.Forms.MessageBox.Show("No file selected for " + button.Text);
-                        return -1;
                     }
 
                     if (panel_pdfInput.Controls[i + 1].Text.Equals("Total"))
@@ -567,9 +569,9 @@ namespace Nielsen_PDF_Creator
 
             for (int i = 0; i < fileList.Count; i++)
             {
-                if(i == 2)
+                if (i == 2)
                 {
-                    foreach(String subItem in subList)
+                    foreach (String subItem in subList)
                     {
                         command += "\"" + subItem + "\" ";
                     }
@@ -577,25 +579,11 @@ namespace Nielsen_PDF_Creator
                 command += "\"" + fileList[i] + "\" ";
             }
 
-            command +="cat";
+            command += "cat";
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            Process process = new Process();
-            process.StartInfo.FileName = "pdftk";
-            process.StartInfo.Arguments = command;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardError = true;
-            process.Start();
-            while (!process.StandardError.EndOfStream)
-            {
-                standardError += process.StandardError.ReadLine() + "\n";
-            }
-            process.WaitForExit();
-
-            exitCode += process.ExitCode;
-
+            buildQueue.Enqueue(command);
 
             //Build Invoice PDF
             command = "";
@@ -608,27 +596,12 @@ namespace Nielsen_PDF_Creator
                 + dateTime.Text + " " + "Contract # "
                 + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf";
 
-            process = new Process();
-            process.StartInfo.FileName = "pdftk";
-            process.StartInfo.Arguments = command;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardError = true;
-            process.Start();
-            while (!process.StandardError.EndOfStream)
-            {
-                standardError += process.StandardError.ReadLine() + "\n";
-            }
-            process.WaitForExit();
+            buildQueue.Enqueue(command);
 
-            exitCode += process.ExitCode;
-
-            return exitCode;
         }
 
-        private int BuildLESPDFs()
+        private void QueueLESPDFs()
         {
-            int exitCode = 0;
             String command = "";
             List<string> workOrders = new List<string>();
             fileList = new List<string>();
@@ -653,27 +626,13 @@ namespace Nielsen_PDF_Creator
 
             foreach (String file in fileList)
             {
-                command += "\"" + file +"\" ";
+                command += "\"" + file + "\" ";
             }
             command += "cat";
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            Process process = new Process();
-            process.StartInfo.FileName = "pdftk";
-            process.StartInfo.Arguments = command;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardError = true;
-            process.Start();
-            while (!process.StandardError.EndOfStream)
-            {
-                standardError += process.StandardError.ReadLine()+"\n";
-            }
-            process.WaitForExit();
-
-            exitCode += process.ExitCode;
-            return exitCode;
+            buildQueue.Enqueue(command);
         }
 
         private List<String> BuildSubsList()
@@ -777,9 +736,9 @@ namespace Nielsen_PDF_Creator
 
         private void textbox_WorkingFolder_TextChanged(object sender, EventArgs e)
         {
-            if (!combo_contracts.Text.Equals("Select.."))
+            if (!combo_contracts.Text.Equals("Select..") )
             {
-                button_build.Enabled = true;
+                btn_addtoQueue.Enabled = true;
             }
         }
 
@@ -799,24 +758,14 @@ namespace Nielsen_PDF_Creator
 
         private void button_build_Click(object sender, EventArgs e)
         {
-            int exitCode = 0;
-
-            if (combo_contracts.Text.Contains("LES"))
-            {
-                exitCode = BuildLESPDFs();
-            }
-            else
-            {
-                exitCode = BuildOPPDPDFs();
-            }
-
-
+            int exitCode = processBuildQueue();
 
             if (exitCode == 0)
             {
                 label_Status.Text = "Success!";
                 label_Status.ForeColor = Color.Green;
-                
+                button_build.Text = "Build PDFs " + "(" + buildQueue.Count() + ")";
+                button_build.Enabled = false;
                 //CURRENTLY NOT NEEDED(DANGEROUS) 11/9/18
                 //FileCleanup();
             }
@@ -830,7 +779,29 @@ namespace Nielsen_PDF_Creator
             }
 
         }
+        private int processBuildQueue()
+        {
+            int code = 0;
 
+            while (buildQueue.Count > 0) {
+                String command = buildQueue.Dequeue();
+                Process process = new Process();
+                process.StartInfo.FileName = "pdftk";
+                process.StartInfo.Arguments = command;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardError = true;
+                process.Start();
+                while (!process.StandardError.EndOfStream)
+                {
+                    standardError += process.StandardError.ReadLine() + "\n";
+                }
+                process.WaitForExit();
+
+                code += process.ExitCode;
+            }
+            return code;
+        }
         private void checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CheckedListBox listBox = (CheckedListBox)sender;
@@ -915,5 +886,21 @@ namespace Nielsen_PDF_Creator
             label_Status.Text = "";
         }
 
+        private void btn_addtoQueue_Click(object sender, EventArgs e)
+        {
+            if (combo_contracts.Text.Contains("LES"))
+            {
+                QueueLESPDFs();
+            }
+            else
+            {
+                QueueOPPDPDFs();
+            }
+            button_build.Text = "Build PDFs " + "(" + buildQueue.Count() + ")";
+            if(buildQueue.Count > 0)
+            {
+                button_build.Enabled = true;
+            }
+        }
     }
 }
