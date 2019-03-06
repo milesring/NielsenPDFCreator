@@ -8,5 +8,8 @@
     <Setting Name="LastFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="ContractFilePath" Type="System.Collections.Generic.List&lt;Nielsen_PDF_Creator.Contract&gt;" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

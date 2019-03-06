@@ -45,5 +45,16 @@ namespace Nielsen_PDF_Creator.Properties {
                 this["LastFilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.List<Nielsen_PDF_Creator.FilePathObject> ContractFilePath {
+            get {
+                return ((global::System.Collections.Generic.List<Nielsen_PDF_Creator.FilePathObject>)(this["ContractFilePath"]));
+            }
+            set {
+                this["ContractFilePath"] = value;
+            }
+        }
     }
 }

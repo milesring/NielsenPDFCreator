@@ -34,6 +34,12 @@ namespace Nielsen_PDF_Creator
                 combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
             }
 
+            if (Properties.Settings.Default.ContractFilePath == null)
+            {
+                Properties.Settings.Default.ContractFilePath = new List<FilePathObject>();
+                InitFilePaths();
+            }
+
             buildQueue = new List<QueueItem>();
 
             ButtonEnableCheck();
@@ -123,7 +129,6 @@ namespace Nielsen_PDF_Creator
             LES2019.addContractor("Vicomm");
             LES2019.addContractor("GPS");
             Properties.Settings.Default.ContractList.Add(LES2019);
-
         }
 
         private void BuildSTL()
@@ -199,6 +204,17 @@ namespace Nielsen_PDF_Creator
 
             Properties.Settings.Default.ContractList.Add(custom);
         }
+
+        private void InitFilePaths()
+        {
+            FilePathObject pathObject;
+            foreach (Contract contract in Properties.Settings.Default.ContractList)
+            {
+                pathObject = new FilePathObject(contract.contractName, "");
+                Properties.Settings.Default.ContractFilePath.Add(pathObject);
+            }
+            Properties.Settings.Default.Save();
+        }
         //-------------------------------------------
 
         //Form Display Functions---------------------
@@ -241,7 +257,7 @@ namespace Nielsen_PDF_Creator
         private void DisplayLESInput()
         {
             panel_Contractors.Controls.Clear();
-            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract);
+            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract && x.contractName == combo_contracts.Text);
 
             CheckedListBox clb = null;
             for (int i = 0; i < panel_pdfInput.Controls.Count; i++)
@@ -601,7 +617,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "Nielsen Invoice for WE "
                 + dateTime.Text + " " + "Contract # "
-                + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf";
+                + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf\"";
 
             buildQueue.Add(new QueueItem(combo_contracts.Text + " Invoice", command));
 
@@ -639,7 +655,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            buildQueue.Add(new QueueItem(combo_contracts.Text + " Invoice", command));
+            buildQueue.Add(new QueueItem(combo_contracts.Text, command));
         }
 
         private List<String> BuildSubsList()
@@ -763,8 +779,6 @@ namespace Nielsen_PDF_Creator
                 btn_viewQueue.Enabled = false;
             }
             btn_viewQueue.Text = "View Queue " + "(" + buildQueue.Count() + ")";
-            label_Status.Text = "";
-
         }
         //------------------------------------------
 
@@ -795,20 +809,21 @@ namespace Nielsen_PDF_Creator
         {
 
             string fileName = null;
+            FilePathObject pathObject = Properties.Settings.Default.ContractFilePath.Find(x => x.getName() == combo_contracts.Text);
 
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
-                if (Properties.Settings.Default.LastFilePath.Equals("") && textbox_WorkingFolder.Text.Equals(""))
+                if (pathObject == null && textbox_WorkingFolder.Text.Equals(""))
                 {
                     openFileDialog1.InitialDirectory = "c:\\";
                 }
-                else if (!textbox_WorkingFolder.Text.Equals(""))
+                else if (pathObject != null)
                 {
-                    openFileDialog1.InitialDirectory = textbox_WorkingFolder.Text;
+                    openFileDialog1.InitialDirectory = pathObject.getPath();
                 }
                 else
                 {
-                    openFileDialog1.InitialDirectory = Properties.Settings.Default.LastFilePath;
+                    openFileDialog1.InitialDirectory = textbox_WorkingFolder.Text;
                 }
 
                 openFileDialog1.Filter = "pdf files (*.pdf)|*.pdf";
@@ -820,7 +835,11 @@ namespace Nielsen_PDF_Creator
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     fileName = openFileDialog1.FileName;
-                    Properties.Settings.Default.LastFilePath = Path.GetDirectoryName(fileName);
+                    if (pathObject == null)
+                    {
+                        pathObject = new FilePathObject(combo_contracts.Text, "");
+                    }
+                    pathObject.setPath(Path.GetDirectoryName(fileName));
                     Properties.Settings.Default.Save();
                     Button senderButton = (Button)sender;
                     int index = senderButton.Parent.Controls.IndexOf(senderButton);
@@ -857,15 +876,18 @@ namespace Nielsen_PDF_Creator
 
         private void button_WorkingFolder_Click(object sender, EventArgs e)
         {
+            FilePathObject pathObject = Properties.Settings.Default.ContractFilePath.Find(x => x.getName() == combo_contracts.Text);
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
+                if(pathObject != null)
+                {
+                    openFileDialog1.InitialDirectory = pathObject.getPath();
+                }
                 openFileDialog1.ValidateNames = false;
                 openFileDialog1.CheckFileExists = false;
                 openFileDialog1.CheckPathExists = true;
 
                 openFileDialog1.FileName = "Folder Selection.";
-                int removalNum = openFileDialog1.FileName.Count();
-                String path = "";
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);

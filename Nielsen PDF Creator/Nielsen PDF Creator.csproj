@@ -52,6 +52,7 @@
     <Compile Include="CommandEditForm.Designer.cs">
       <DependentUpon>CommandEditForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FilePathObject.cs" />
     <Compile Include="QueueForm.cs">
       <SubType>Form</SubType>
     </Compile>
