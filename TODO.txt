@@ -68,6 +68,9 @@ Scaling of the app on resize - DONE
 3/4/19:
 Add build queue - DONE 3/4/19
 Change queue to list for deletion/editing - DONE 3/6/19
-view/edit list - VIEW done 3-6-19, 
+view/edit list - DONE 3/6/19
 settings window to edit contracts/contractors
 save last location used per contract
+
+3/6/19:
+View/Edit individual queued pdf commands - DONE 3/6/19
