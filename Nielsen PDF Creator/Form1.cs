@@ -13,7 +13,7 @@ namespace Nielsen_PDF_Creator
         private List<String> fileList;
         private List<String> subList;
         private String standardError = "";
-        private Queue<String> buildQueue;
+        private List<String> buildQueue;
 
         public Form1()
         {
@@ -34,10 +34,10 @@ namespace Nielsen_PDF_Creator
                 combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
             }
 
-            buildQueue = new Queue<string>();
+            buildQueue = new List<string>();
 
-            button_build.Enabled = false;
-            button_build.Text = "Build PDFs " + "(" + buildQueue.Count() + ")";
+            ButtonEnableCheck();
+
             textbox_WorkingFolder.Enabled = false;
             button_WorkingFolder.Enabled = false;
             btn_addtoQueue.Enabled = false;
@@ -530,7 +530,7 @@ namespace Nielsen_PDF_Creator
             //TODO: move from combo box of contracts to a settings window
             panel_pdfInput.Controls.Clear();
             panel_Contractors.Controls.Clear();
-            button_build.Enabled = false;
+            ButtonEnableCheck();
             label_Status.Text = "";
 
             //TODO: display type of contract desired in checkbox/radio/whatever
@@ -556,6 +556,7 @@ namespace Nielsen_PDF_Creator
                     {
                         Button button = (Button)panel_pdfInput.Controls[i + 1];
                         System.Windows.Forms.MessageBox.Show("No file selected for " + button.Text);
+                        return;
                     }
 
                     if (panel_pdfInput.Controls[i + 1].Text.Equals("Total"))
@@ -583,7 +584,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            buildQueue.Enqueue(command);
+            buildQueue.Add(command);
 
             //Build Invoice PDF
             command = "";
@@ -596,7 +597,7 @@ namespace Nielsen_PDF_Creator
                 + dateTime.Text + " " + "Contract # "
                 + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf";
 
-            buildQueue.Enqueue(command);
+            buildQueue.Add(command);
 
         }
 
@@ -632,7 +633,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            buildQueue.Enqueue(command);
+            buildQueue.Add(command);
         }
 
         private List<String> BuildSubsList()
@@ -763,11 +764,9 @@ namespace Nielsen_PDF_Creator
             if (exitCode == 0)
             {
                 label_Status.Text = "Success!";
-                label_Status.ForeColor = Color.Green;
-                button_build.Text = "Build PDFs " + "(" + buildQueue.Count() + ")";
-                button_build.Enabled = false;
-                //CURRENTLY NOT NEEDED(DANGEROUS) 11/9/18
-                //FileCleanup();
+                label_Status.ForeColor = Color.Green; 
+                buildQueue.Clear();
+                ButtonEnableCheck();
             }
             else
             {
@@ -783,8 +782,9 @@ namespace Nielsen_PDF_Creator
         {
             int code = 0;
 
-            while (buildQueue.Count > 0) {
-                String command = buildQueue.Dequeue();
+            for (int i = 0; i < buildQueue.Count; i++)
+            {
+                String command = buildQueue[i];
                 Process process = new Process();
                 process.StartInfo.FileName = "pdftk";
                 process.StartInfo.Arguments = command;
@@ -861,7 +861,7 @@ namespace Nielsen_PDF_Creator
             textbox_WorkingFolder.Enabled = true;
             label_Status.Text = "";
             textbox_WorkingFolder.Text = "";
-            button_build.Enabled = false;
+            ButtonEnableCheck();
 
             if (combo_contracts.Text.Contains("LES"))
             {
@@ -888,6 +888,7 @@ namespace Nielsen_PDF_Creator
 
         private void btn_addtoQueue_Click(object sender, EventArgs e)
         {
+
             if (combo_contracts.Text.Contains("LES"))
             {
                 QueueLESPDFs();
@@ -896,11 +897,37 @@ namespace Nielsen_PDF_Creator
             {
                 QueueOPPDPDFs();
             }
-            button_build.Text = "Build PDFs " + "(" + buildQueue.Count() + ")";
+
+            ButtonEnableCheck();
+
+
+        }
+        private void ButtonEnableCheck()
+        {
             if(buildQueue.Count > 0)
             {
                 button_build.Enabled = true;
+                btn_viewQueue.Enabled = true;
             }
+            else
+            {
+                button_build.Enabled = false;
+                btn_viewQueue.Enabled = false;
+            }
+            btn_viewQueue.Text = "View Queue " + "(" + buildQueue.Count() + ")";
+
+        }
+        private void btn_viewQueue_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2(ref buildQueue);
+            form2.FormClosed += Form2Closed;
+            form2.Show();
+        }
+
+        private void Form2Closed(object sender, FormClosedEventArgs e)
+        {
+            ButtonEnableCheck();
         }
     }
+
 }

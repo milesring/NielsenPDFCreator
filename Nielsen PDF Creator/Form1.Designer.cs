@@ -40,6 +40,7 @@
             this.label_Status = new System.Windows.Forms.Label();
             this.panel_Contractors = new System.Windows.Forms.Panel();
             this.btn_addtoQueue = new System.Windows.Forms.Button();
+            this.btn_viewQueue = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label_contractbox
@@ -159,7 +160,7 @@
             // 
             // btn_addtoQueue
             // 
-            this.btn_addtoQueue.Location = new System.Drawing.Point(674, 354);
+            this.btn_addtoQueue.Location = new System.Drawing.Point(674, 325);
             this.btn_addtoQueue.Name = "btn_addtoQueue";
             this.btn_addtoQueue.Size = new System.Drawing.Size(114, 23);
             this.btn_addtoQueue.TabIndex = 13;
@@ -167,11 +168,22 @@
             this.btn_addtoQueue.UseVisualStyleBackColor = true;
             this.btn_addtoQueue.Click += new System.EventHandler(this.btn_addtoQueue_Click);
             // 
+            // btn_viewQueue
+            // 
+            this.btn_viewQueue.Location = new System.Drawing.Point(674, 354);
+            this.btn_viewQueue.Name = "btn_viewQueue";
+            this.btn_viewQueue.Size = new System.Drawing.Size(114, 23);
+            this.btn_viewQueue.TabIndex = 14;
+            this.btn_viewQueue.Text = "View Queue";
+            this.btn_viewQueue.UseVisualStyleBackColor = true;
+            this.btn_viewQueue.Click += new System.EventHandler(this.btn_viewQueue_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btn_viewQueue);
             this.Controls.Add(this.btn_addtoQueue);
             this.Controls.Add(this.panel_Contractors);
             this.Controls.Add(this.label_Status);
@@ -206,6 +218,7 @@
         private System.Windows.Forms.Label label_Status;
         private System.Windows.Forms.Panel panel_Contractors;
         private System.Windows.Forms.Button btn_addtoQueue;
+        private System.Windows.Forms.Button btn_viewQueue;
     }
 }
 

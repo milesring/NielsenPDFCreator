@@ -66,7 +66,8 @@ Help/Tool tips when hovering over fields - DONE FOR LES, NEED URD
 Scaling of the app on resize
 
 3/4/19:
-Add build queue
-view/edit queue
+Add build queue - DONE 3/4/19
+Change queue to array for deletion/editing
+view/edit array
 settings window to edit contracts/contractors
 save last location used per contract
