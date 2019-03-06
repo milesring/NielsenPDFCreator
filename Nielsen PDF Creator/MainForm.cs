@@ -8,14 +8,14 @@ using System.Windows.Forms;
 
 namespace Nielsen_PDF_Creator
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private List<String> fileList;
         private List<String> subList;
         private String standardError = "";
-        private List<String> buildQueue;
+        private List<QueueItem> buildQueue;
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -34,7 +34,7 @@ namespace Nielsen_PDF_Creator
                 combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
             }
 
-            buildQueue = new List<string>();
+            buildQueue = new List<QueueItem>();
 
             ButtonEnableCheck();
 
@@ -43,6 +43,8 @@ namespace Nielsen_PDF_Creator
             btn_addtoQueue.Enabled = false;
         }
 
+
+        //Data Building Functions---------------------
         private void BuildContracts()
         {
             List<Contract> ContractList = new List<Contract>();
@@ -197,7 +199,9 @@ namespace Nielsen_PDF_Creator
 
             Properties.Settings.Default.ContractList.Add(custom);
         }
+        //-------------------------------------------
 
+        //Form Display Functions---------------------
         private void DisplayLESWOs()
         {
             panel_pdfInput.Controls.Clear();
@@ -539,7 +543,9 @@ namespace Nielsen_PDF_Creator
             //TODO: add contractors to contract
             //TODO:
         }
+        //-------------------------------------------
 
+        //Building pdf command functions-------------
         private void QueueOPPDPDFs()
         {
             String command = "";
@@ -584,7 +590,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            buildQueue.Add(command);
+            buildQueue.Add(new QueueItem(combo_contracts.Text + " TJ Report", command));
 
             //Build Invoice PDF
             command = "";
@@ -597,7 +603,7 @@ namespace Nielsen_PDF_Creator
                 + dateTime.Text + " " + "Contract # "
                 + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf";
 
-            buildQueue.Add(command);
+            buildQueue.Add(new QueueItem(combo_contracts.Text + " Invoice", command));
 
         }
 
@@ -633,7 +639,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "TJ Report" + " " + dateTime.Text + ".pdf\"";
 
-            buildQueue.Add(command);
+            buildQueue.Add(new QueueItem(combo_contracts.Text + " Invoice", command));
         }
 
         private List<String> BuildSubsList()
@@ -660,6 +666,33 @@ namespace Nielsen_PDF_Creator
             return subList;
         }
 
+        private int processBuildQueue()
+        {
+            int code = 0;
+
+            for (int i = 0; i < buildQueue.Count; i++)
+            {
+                String command = buildQueue[i].getCommand();
+                Process process = new Process();
+                process.StartInfo.FileName = "pdftk";
+                process.StartInfo.Arguments = command;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardError = true;
+                process.Start();
+                while (!process.StandardError.EndOfStream)
+                {
+                    standardError += process.StandardError.ReadLine() + "\n";
+                }
+                process.WaitForExit();
+
+                code += process.ExitCode;
+            }
+            return code;
+        }
+        //-------------------------------------------
+
+        //Misc utility functions--------------------
         private void FileCleanup()
         {
                 var confirmResult = MessageBox.Show("Would you like to remove files used to build reports?",
@@ -698,24 +731,6 @@ namespace Nielsen_PDF_Creator
 
                 }
         }
-        
-        private void button_WorkingFolder_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
-            {
-                openFileDialog1.ValidateNames = false;
-                openFileDialog1.CheckFileExists = false;
-                openFileDialog1.CheckPathExists = true;
-
-                openFileDialog1.FileName = "Folder Selection.";
-                int removalNum = openFileDialog1.FileName.Count();
-                String path = "";
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);
-                }
-            }
-        }
 
         private String trimPath(String path)
         {
@@ -735,28 +750,25 @@ namespace Nielsen_PDF_Creator
             return returnPath;
         }
 
-        private void textbox_WorkingFolder_TextChanged(object sender, EventArgs e)
+        private void ButtonEnableCheck()
         {
-            if (!combo_contracts.Text.Equals("Select..") )
+            if (buildQueue.Count > 0)
             {
-                btn_addtoQueue.Enabled = true;
+                button_build.Enabled = true;
+                btn_viewQueue.Enabled = true;
             }
-        }
-
-        private void checkbox_Custom_CheckChanged(object sender, EventArgs e)
-        {
-            CheckBox cb = (CheckBox)sender;
-            Panel panel = (Panel)cb.Parent;
-
-            foreach (Control control in panel.Controls)
+            else
             {
-                if (control.GetType() != typeof(CheckBox))
-                {
-                    control.Enabled = cb.Checked;
-                }
+                button_build.Enabled = false;
+                btn_viewQueue.Enabled = false;
             }
-        }
+            btn_viewQueue.Text = "View Queue " + "(" + buildQueue.Count() + ")";
+            label_Status.Text = "";
 
+        }
+        //------------------------------------------
+
+        //Button events-----------------------------
         private void button_build_Click(object sender, EventArgs e)
         {
             int exitCode = processBuildQueue();
@@ -764,7 +776,7 @@ namespace Nielsen_PDF_Creator
             if (exitCode == 0)
             {
                 label_Status.Text = "Success!";
-                label_Status.ForeColor = Color.Green; 
+                label_Status.ForeColor = Color.Green;
                 buildQueue.Clear();
                 ButtonEnableCheck();
             }
@@ -777,35 +789,6 @@ namespace Nielsen_PDF_Creator
                 standardError = "";
             }
 
-        }
-        private int processBuildQueue()
-        {
-            int code = 0;
-
-            for (int i = 0; i < buildQueue.Count; i++)
-            {
-                String command = buildQueue[i];
-                Process process = new Process();
-                process.StartInfo.FileName = "pdftk";
-                process.StartInfo.Arguments = command;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardError = true;
-                process.Start();
-                while (!process.StandardError.EndOfStream)
-                {
-                    standardError += process.StandardError.ReadLine() + "\n";
-                }
-                process.WaitForExit();
-
-                code += process.ExitCode;
-            }
-            return code;
-        }
-        private void checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CheckedListBox listBox = (CheckedListBox)sender;
-            listBox.ClearSelected();
         }
 
         private void button_pdf1browse_Click(object sender, EventArgs e)
@@ -843,12 +826,81 @@ namespace Nielsen_PDF_Creator
                     int index = senderButton.Parent.Controls.IndexOf(senderButton);
                     senderButton.Parent.Controls[index - 1].Text = fileName;
 
-                    if(textbox_WorkingFolder.Text == "")
+                    if (textbox_WorkingFolder.Text == "")
                     {
                         textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);
                     }
                 }
             }
+        }
+
+        private void btn_addtoQueue_Click(object sender, EventArgs e)
+        {
+
+            if (combo_contracts.Text.Contains("LES"))
+            {
+                QueueLESPDFs();
+            }
+            else
+            {
+                QueueOPPDPDFs();
+            }
+            ButtonEnableCheck();
+        }
+
+        private void btn_viewQueue_Click(object sender, EventArgs e)
+        {
+            QueueForm queueForm = new QueueForm(ref buildQueue);
+            queueForm.FormClosed += QueueFormClosed;
+            queueForm.Show();
+        }
+
+        private void button_WorkingFolder_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+            {
+                openFileDialog1.ValidateNames = false;
+                openFileDialog1.CheckFileExists = false;
+                openFileDialog1.CheckPathExists = true;
+
+                openFileDialog1.FileName = "Folder Selection.";
+                int removalNum = openFileDialog1.FileName.Count();
+                String path = "";
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);
+                }
+            }
+        }
+        //------------------------------------------
+
+        //Control events----------------------------
+        private void textbox_WorkingFolder_TextChanged(object sender, EventArgs e)
+        {
+            if (!combo_contracts.Text.Equals("Select..") )
+            {
+                btn_addtoQueue.Enabled = true;
+            }
+        }
+
+        private void checkbox_Custom_CheckChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = (CheckBox)sender;
+            Panel panel = (Panel)cb.Parent;
+
+            foreach (Control control in panel.Controls)
+            {
+                if (control.GetType() != typeof(CheckBox))
+                {
+                    control.Enabled = cb.Checked;
+                }
+            }
+        }
+
+        private void checkedListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckedListBox listBox = (CheckedListBox)sender;
+            listBox.ClearSelected();
         }
 
         private void combo_contracts_SelectedIndexChanged(object sender, EventArgs e)
@@ -886,48 +938,11 @@ namespace Nielsen_PDF_Creator
             label_Status.Text = "";
         }
 
-        private void btn_addtoQueue_Click(object sender, EventArgs e)
-        {
-
-            if (combo_contracts.Text.Contains("LES"))
-            {
-                QueueLESPDFs();
-            }
-            else
-            {
-                QueueOPPDPDFs();
-            }
-
-            ButtonEnableCheck();
-
-
-        }
-        private void ButtonEnableCheck()
-        {
-            if(buildQueue.Count > 0)
-            {
-                button_build.Enabled = true;
-                btn_viewQueue.Enabled = true;
-            }
-            else
-            {
-                button_build.Enabled = false;
-                btn_viewQueue.Enabled = false;
-            }
-            btn_viewQueue.Text = "View Queue " + "(" + buildQueue.Count() + ")";
-
-        }
-        private void btn_viewQueue_Click(object sender, EventArgs e)
-        {
-            Form2 form2 = new Form2(ref buildQueue);
-            form2.FormClosed += Form2Closed;
-            form2.Show();
-        }
-
-        private void Form2Closed(object sender, FormClosedEventArgs e)
+        private void QueueFormClosed(object sender, FormClosedEventArgs e)
         {
             ButtonEnableCheck();
         }
+        //-------------------------------------------
     }
 
 }

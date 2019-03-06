@@ -45,7 +45,7 @@ TJ Report
 	
 	
 CURRENT TODO 10/15/18:
-Messages for failures.
+Messages for failures - DONE
 Fix working directory button - DONE 10/15/18
 build les out - DONE
 
@@ -55,19 +55,19 @@ Clear working directory on contract change. DONE
 11/5/18:
 Messages for failures.
 Help/Tool tips when hovering over fields - DONE FOR LES, NEED URD
-Scaling of the app on resize
-For selectable inputs (ie carlson only for a single LES WO), use individual panels containing checkbox, filepath textbox, and browse button. enable/disable by using checkbox.
+Scaling of the app on resize - DONE
+For selectable inputs (ie carlson only for a single LES WO), use individual panels containing checkbox, filepath textbox, and browse button. enable/disable by using checkbox. - DONE
 
 11/19/18:
 Update OPPD to LES input style
 ADD/REMOVE contractors
 ADD/REMOVE pdfs for each contractor
 Help/Tool tips when hovering over fields - DONE FOR LES, NEED URD
-Scaling of the app on resize
+Scaling of the app on resize - DONE
 
 3/4/19:
 Add build queue - DONE 3/4/19
-Change queue to array for deletion/editing
-view/edit array
+Change queue to list for deletion/editing - DONE 3/6/19
+view/edit list - VIEW done 3-6-19, 
 settings window to edit contracts/contractors
 save last location used per contract

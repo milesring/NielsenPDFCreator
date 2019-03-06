@@ -1,6 +1,6 @@
 ﻿namespace Nielsen_PDF_Creator
 {
-    partial class Form2
+    partial class QueueForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,6 +31,7 @@
             this.clb_BuildQueue = new System.Windows.Forms.CheckedListBox();
             this.btn_remove = new System.Windows.Forms.Button();
             this.btn_close = new System.Windows.Forms.Button();
+            this.btn_edit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // clb_BuildQueue
@@ -64,11 +65,22 @@
             this.btn_close.UseVisualStyleBackColor = true;
             this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
             // 
+            // btn_edit
+            // 
+            this.btn_edit.Location = new System.Drawing.Point(142, 343);
+            this.btn_edit.Name = "btn_edit";
+            this.btn_edit.Size = new System.Drawing.Size(75, 23);
+            this.btn_edit.TabIndex = 3;
+            this.btn_edit.Text = "View/Edit";
+            this.btn_edit.UseVisualStyleBackColor = true;
+            this.btn_edit.Click += new System.EventHandler(this.btn_edit_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(371, 387);
+            this.Controls.Add(this.btn_edit);
             this.Controls.Add(this.btn_close);
             this.Controls.Add(this.btn_remove);
             this.Controls.Add(this.clb_BuildQueue);
@@ -84,5 +96,6 @@
         private System.Windows.Forms.CheckedListBox clb_BuildQueue;
         private System.Windows.Forms.Button btn_remove;
         private System.Windows.Forms.Button btn_close;
+        private System.Windows.Forms.Button btn_edit;
     }
 }
