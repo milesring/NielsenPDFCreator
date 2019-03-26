@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label_contractbox = new System.Windows.Forms.Label();
             this.combo_contracts = new System.Windows.Forms.ComboBox();
             this.button_build = new System.Windows.Forms.Button();
@@ -41,6 +42,7 @@
             this.panel_Contractors = new System.Windows.Forms.Panel();
             this.btn_addtoQueue = new System.Windows.Forms.Button();
             this.btn_viewQueue = new System.Windows.Forms.Button();
+            this.btn_editContracts = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label_contractbox
@@ -178,11 +180,22 @@
             this.btn_viewQueue.UseVisualStyleBackColor = true;
             this.btn_viewQueue.Click += new System.EventHandler(this.btn_viewQueue_Click);
             // 
-            // Form1
+            // btn_editContracts
+            // 
+            this.btn_editContracts.Location = new System.Drawing.Point(209, 37);
+            this.btn_editContracts.Name = "btn_editContracts";
+            this.btn_editContracts.Size = new System.Drawing.Size(41, 23);
+            this.btn_editContracts.TabIndex = 15;
+            this.btn_editContracts.Text = "Edit";
+            this.btn_editContracts.UseVisualStyleBackColor = true;
+            this.btn_editContracts.Click += new System.EventHandler(this.btn_editContracts_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btn_editContracts);
             this.Controls.Add(this.btn_viewQueue);
             this.Controls.Add(this.btn_addtoQueue);
             this.Controls.Add(this.panel_Contractors);
@@ -196,8 +209,9 @@
             this.Controls.Add(this.button_build);
             this.Controls.Add(this.combo_contracts);
             this.Controls.Add(this.label_contractbox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(816, 489);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Nielsen PDF Creator";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -219,6 +233,7 @@
         private System.Windows.Forms.Panel panel_Contractors;
         private System.Windows.Forms.Button btn_addtoQueue;
         private System.Windows.Forms.Button btn_viewQueue;
+        private System.Windows.Forms.Button btn_editContracts;
     }
 }
 

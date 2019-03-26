@@ -69,5 +69,10 @@ namespace Nielsen_PDF_Creator
             }
             return contractors.ElementAt(index);
         }
+
+        public override string ToString()
+        {
+            return contractName;
+        }
     }
 }

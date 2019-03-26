@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueueForm));
             this.clb_BuildQueue = new System.Windows.Forms.CheckedListBox();
             this.btn_remove = new System.Windows.Forms.Button();
             this.btn_close = new System.Windows.Forms.Button();
@@ -75,7 +76,7 @@
             this.btn_edit.UseVisualStyleBackColor = true;
             this.btn_edit.Click += new System.EventHandler(this.btn_edit_Click);
             // 
-            // Form2
+            // QueueForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -84,7 +85,8 @@
             this.Controls.Add(this.btn_close);
             this.Controls.Add(this.btn_remove);
             this.Controls.Add(this.clb_BuildQueue);
-            this.Name = "Form2";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "QueueForm";
             this.Text = "Build Queue";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);

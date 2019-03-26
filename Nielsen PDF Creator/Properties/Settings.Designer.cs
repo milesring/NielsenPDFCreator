@@ -12,7 +12,7 @@ namespace Nielsen_PDF_Creator.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -20,40 +20,6 @@ namespace Nielsen_PDF_Creator.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.List<Nielsen_PDF_Creator.Contract> ContractList {
-            get {
-                return ((global::System.Collections.Generic.List<Nielsen_PDF_Creator.Contract>)(this["ContractList"]));
-            }
-            set {
-                this["ContractList"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LastFilePath {
-            get {
-                return ((string)(this["LastFilePath"]));
-            }
-            set {
-                this["LastFilePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Generic.List<Nielsen_PDF_Creator.FilePathObject> ContractFilePath {
-            get {
-                return ((global::System.Collections.Generic.List<Nielsen_PDF_Creator.FilePathObject>)(this["ContractFilePath"]));
-            }
-            set {
-                this["ContractFilePath"] = value;
             }
         }
     }

@@ -10,6 +10,7 @@ namespace Nielsen_PDF_Creator
 {
     public partial class MainForm : Form
     {
+        private PDFSettings settings;
         private List<String> fileList;
         private List<String> subList;
         private String standardError = "";
@@ -23,21 +24,23 @@ namespace Nielsen_PDF_Creator
         private void Form1_Load(object sender, EventArgs e)
         {
             label_Status.Text = "";
-            Properties.Settings.Default.ContractList = null;
 
-            if (Properties.Settings.Default.ContractList == null)
+            settings = PDFSettings.Load();
+            if(settings.contractList.Count < 1)
             {
                 BuildContracts();
-            }
-            for (int i = 0; i < Properties.Settings.Default.ContractList.Count; i++)
-            {
-                combo_contracts.Items.Add(Properties.Settings.Default.ContractList.ElementAt(i).contractName);
+                settings.Save();
             }
 
-            if (Properties.Settings.Default.ContractFilePath == null)
+            for (int i = 0; i < settings.contractList.Count; i++)
             {
-                Properties.Settings.Default.ContractFilePath = new List<FilePathObject>();
+                combo_contracts.Items.Add(settings.contractList.ElementAt(i).contractName);
+            }
+
+            if(settings.contractFilePath.Count < 1)
+            {
                 InitFilePaths();
+                settings.Save();
             }
 
             buildQueue = new List<QueueItem>();
@@ -47,25 +50,20 @@ namespace Nielsen_PDF_Creator
             textbox_WorkingFolder.Enabled = false;
             button_WorkingFolder.Enabled = false;
             btn_addtoQueue.Enabled = false;
+
         }
 
 
         //Data Building Functions---------------------
         private void BuildContracts()
         {
-            List<Contract> ContractList = new List<Contract>();
-            Properties.Settings.Default.ContractList = ContractList;
-
             BuildURD();
             BuildSTL();
             BuildHourly();
             BuildMetro();
             BuildRural();
             BuildLES();
-            BuildCustom();
-           
-            Properties.Settings.Default.Save();
-
+          
         }
 
         private void BuildURD()
@@ -84,9 +82,10 @@ namespace Nielsen_PDF_Creator
             URD.addContractor("Jeff");
             URD.addContractor("Jesse");
             URD.addContractor("JJ Drilling");
+            URD.addContractor("Day Electric");
 
-
-            Properties.Settings.Default.ContractList.Add(URD);
+            settings.contractList.Add(URD);
+ 
         }
 
         private void BuildLES()
@@ -117,7 +116,7 @@ namespace Nielsen_PDF_Creator
             LES.addContractor("Vicomm");
             LES.addContractor("GPS");
 
-            Properties.Settings.Default.ContractList.Add(LES);
+            settings.contractList.Add(LES);
 
             LESContract LES2019 = new LESContract();
             LES2019.contractName = "LES 2019";
@@ -128,7 +127,8 @@ namespace Nielsen_PDF_Creator
             LES2019.addContractor("Atlas");
             LES2019.addContractor("Vicomm");
             LES2019.addContractor("GPS");
-            Properties.Settings.Default.ContractList.Add(LES2019);
+
+            settings.contractList.Add(LES2019);
         }
 
         private void BuildSTL()
@@ -144,9 +144,9 @@ namespace Nielsen_PDF_Creator
             STL.addContractor("Day Electric");
             STL.addContractor("Jesse");
             STL.addContractor("Melvin");
+            STL.addContractor("Simon Brothers");
 
-            Properties.Settings.Default.ContractList.Add(STL);
-
+            settings.contractList.Add(STL);
         }
 
         private void BuildHourly()
@@ -161,7 +161,7 @@ namespace Nielsen_PDF_Creator
             Hourly.addContractor("Dean");
             Hourly.addContractor("Ed");
 
-            Properties.Settings.Default.ContractList.Add(Hourly);
+            settings.contractList.Add(Hourly);
         }
 
         private void BuildMetro()
@@ -176,8 +176,8 @@ namespace Nielsen_PDF_Creator
             Metro.addContractor("Crew 24 Chris");
             Metro.addContractor("Fitzgerald");
             Metro.addContractor("Central States");
-            Metro.addContractor("Omaha Concrete Sawing");
-            Properties.Settings.Default.ContractList.Add(Metro);
+
+            settings.contractList.Add(Metro);
 
         }
 
@@ -194,26 +194,18 @@ namespace Nielsen_PDF_Creator
             Rural.addContractor("Jesse");
             Rural.addContractor("Jeff");
 
-            Properties.Settings.Default.ContractList.Add(Rural);
-        }
-
-        private void BuildCustom()
-        {
-            Contract custom = new Contract();
-            custom.contractName = "Add new...";
-
-            Properties.Settings.Default.ContractList.Add(custom);
+            settings.contractList.Add(Rural);
         }
 
         private void InitFilePaths()
         {
             FilePathObject pathObject;
-            foreach (Contract contract in Properties.Settings.Default.ContractList)
+            foreach (Contract contract in settings.contractList)
             {
                 pathObject = new FilePathObject(contract.contractName, "");
-                Properties.Settings.Default.ContractFilePath.Add(pathObject);
+                settings.contractFilePath.Add(pathObject);
             }
-            Properties.Settings.Default.Save();
+            settings.Save();
         }
         //-------------------------------------------
 
@@ -230,7 +222,7 @@ namespace Nielsen_PDF_Creator
             CheckedListBox checkedListBoxWOs = new CheckedListBox();
             checkedListBoxWOs.Size = new Size(checkedListBoxWOs.Size.Width, checkedListBoxWOs.Size.Height * 2);
 
-            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract && x.contractName == combo_contracts.Text);
+            LESContract contract = (LESContract)settings.contractList.Find(x => x is LESContract && x.contractName == combo_contracts.Text);
 
             for (int i = 0; i < contract.woCount(); i++)
             {
@@ -248,16 +240,12 @@ namespace Nielsen_PDF_Creator
             //CHANGE TO THIS 11/9/18
             //checkedListBoxWOs.ItemCheck += new EventHandler(LESWOCheckboxChanged);
             panel_pdfInput.Controls.Add(checkedListBoxWOs);
-
-            
-
-        
     }
 
         private void DisplayLESInput()
         {
             panel_Contractors.Controls.Clear();
-            LESContract contract = (LESContract)Properties.Settings.Default.ContractList.Find(x => x is LESContract && x.contractName == combo_contracts.Text);
+            LESContract contract = (LESContract)settings.contractList.Find(x => x is LESContract && x.contractName == combo_contracts.Text);
 
             CheckedListBox clb = null;
             for (int i = 0; i < panel_pdfInput.Controls.Count; i++)
@@ -503,10 +491,10 @@ namespace Nielsen_PDF_Creator
             panel_Contractors.Controls.Add(contractorLabel);
 
             //search contract list for index of contract name
-            int index = Properties.Settings.Default.ContractList.FindIndex(x => x.contractName.Equals(combo_contracts.Text));
+            int index = settings.contractList.FindIndex(x => x.contractName.Equals(combo_contracts.Text));
 
             //build buttons & textboxes from that index in list
-            for (int i = 0; i < Properties.Settings.Default.ContractList.ElementAt(index).labelCount(); i++)
+            for (int i = 0; i < settings.contractList.ElementAt(index).labelCount(); i++)
             {
                 TextBox textBox = new TextBox();
                 panel_pdfInput.Controls.Add(textBox);
@@ -518,7 +506,7 @@ namespace Nielsen_PDF_Creator
 
                 Button button = new Button();
                 panel_pdfInput.Controls.Add(button);
-                button.Text = Properties.Settings.Default.ContractList.ElementAt(index).labelAt(i);
+                button.Text = settings.contractList.ElementAt(index).labelAt(i);
                 button.Anchor = AnchorStyles.Top;
                 button.Location = new System.Drawing.Point(240, 30 + i * 30);
                 button.Width = 75;
@@ -529,12 +517,12 @@ namespace Nielsen_PDF_Creator
             }
 
             //build checkboxes for contractors
-            if (Properties.Settings.Default.ContractList.ElementAt(index).contractorCount() > 0)
+            if (settings.contractList.ElementAt(index).contractorCount() > 0)
             {
                 CheckedListBox checkedList = new CheckedListBox();
-                for (int i = 0; i < Properties.Settings.Default.ContractList.ElementAt(index).contractorCount(); i++)
+                for (int i = 0; i < settings.contractList.ElementAt(index).contractorCount(); i++)
                 {
-                    checkedList.Items.Add(Properties.Settings.Default.ContractList.ElementAt(index).contractorAt(i), true);
+                    checkedList.Items.Add(settings.contractList.ElementAt(index).contractorAt(i), true);
                 }
                 panel_Contractors.Controls.Add(checkedList);
                 checkedList.Location = new System.Drawing.Point(0, 30);
@@ -617,7 +605,7 @@ namespace Nielsen_PDF_Creator
             command += " " + "output";
             command += " " + "\"" + textbox_WorkingFolder.Text + "\\" + combo_contracts.Text + " " + "Nielsen Invoice for WE "
                 + dateTime.Text + " " + "Contract # "
-                + Properties.Settings.Default.ContractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf\"";
+                + settings.contractList.Find(x => x.contractName.Equals(combo_contracts.Text)).contractNum + ".pdf\"";
 
             buildQueue.Add(new QueueItem(combo_contracts.Text + " Invoice", command));
 
@@ -672,7 +660,7 @@ namespace Nielsen_PDF_Creator
                     foreach (var item in listbox.CheckedItems)
                     {
                         subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " " + dateTime.Text + ".pdf");
-                        if (item.ToString().Equals("CBT"))
+                        if (item.ToString().Equals("CBT") || item.ToString().Equals("Simon Brothers"))
                         {
                             subList.Add(textbox_WorkingFolder.Text + "\\" + contract + " " + item.ToString() + " Payment" + " " + dateTime.Text + ".pdf");
                         }
@@ -809,7 +797,7 @@ namespace Nielsen_PDF_Creator
         {
 
             string fileName = null;
-            FilePathObject pathObject = Properties.Settings.Default.ContractFilePath.Find(x => x.getName() == combo_contracts.Text);
+            FilePathObject pathObject = settings.contractFilePath.Find(x => x.getName() == combo_contracts.Text);
 
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
@@ -838,9 +826,10 @@ namespace Nielsen_PDF_Creator
                     if (pathObject == null)
                     {
                         pathObject = new FilePathObject(combo_contracts.Text, "");
+                        settings.contractFilePath.Add(pathObject);
                     }
                     pathObject.setPath(Path.GetDirectoryName(fileName));
-                    Properties.Settings.Default.Save();
+                    settings.Save();
                     Button senderButton = (Button)sender;
                     int index = senderButton.Parent.Controls.IndexOf(senderButton);
                     senderButton.Parent.Controls[index - 1].Text = fileName;
@@ -876,12 +865,17 @@ namespace Nielsen_PDF_Creator
 
         private void button_WorkingFolder_Click(object sender, EventArgs e)
         {
-            FilePathObject pathObject = Properties.Settings.Default.ContractFilePath.Find(x => x.getName() == combo_contracts.Text);
+            FilePathObject pathObject = settings.contractFilePath.Find(x => x.getName() == combo_contracts.Text);
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
                 if(pathObject != null)
                 {
                     openFileDialog1.InitialDirectory = pathObject.getPath();
+                }
+                else
+                {
+                    pathObject = new FilePathObject(combo_contracts.Text, "");
+                    settings.contractFilePath.Add(pathObject);
                 }
                 openFileDialog1.ValidateNames = false;
                 openFileDialog1.CheckFileExists = false;
@@ -891,8 +885,16 @@ namespace Nielsen_PDF_Creator
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     textbox_WorkingFolder.Text = trimPath(openFileDialog1.FileName);
+                    pathObject.setPath(textbox_WorkingFolder.Text);
+                    settings.Save();
                 }
             }
+        }
+
+        private void btn_editContracts_Click(object sender, EventArgs e)
+        {
+            ContractEditForm contractEdit = new ContractEditForm();
+            contractEdit.Show();
         }
         //------------------------------------------
 
@@ -942,10 +944,6 @@ namespace Nielsen_PDF_Creator
 
                 DisplayLESWOs();
             }
-            else if(combo_contracts.Text.Equals("Add new..."))
-            {
-                DisplayContractBuilder();
-            }
             else
             {
                 DisplayOPPD();
@@ -964,7 +962,15 @@ namespace Nielsen_PDF_Creator
         {
             ButtonEnableCheck();
         }
+
+
         //-------------------------------------------
     }
 
+    class PDFSettings : JsonSettings<PDFSettings>
+    {
+        public List<Contract> contractList = new List<Contract>();
+        public List<FilePathObject> contractFilePath = new List<FilePathObject>();
+
+    }
 }

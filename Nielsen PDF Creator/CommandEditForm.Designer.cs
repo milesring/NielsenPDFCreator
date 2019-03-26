@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommandEditForm));
             this.tb_commandedit = new System.Windows.Forms.TextBox();
             this.btn_revert = new System.Windows.Forms.Button();
             this.btn_cancel = new System.Windows.Forms.Button();
@@ -85,6 +86,7 @@
             this.Controls.Add(this.btn_cancel);
             this.Controls.Add(this.btn_revert);
             this.Controls.Add(this.tb_commandedit);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommandEditForm";
             this.Text = "Edit Command";
             this.Load += new System.EventHandler(this.CommandEditForm_Load);

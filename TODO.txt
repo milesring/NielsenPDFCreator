@@ -74,3 +74,9 @@ save last location used per contract - DONE 3/6/19
 
 3/6/19:
 View/Edit individual queued pdf commands - DONE 3/6/19
+
+3/25/19:
+deletion of oppd input
+auto select working folder using pdf date
+switch settings to json
+
